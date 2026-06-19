@@ -1,0 +1,590 @@
+import express from 'express';
+import cors from 'cors';
+import { dbAll, dbGet, dbRun } from './database.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+
+// Ensure uploads folder exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/api/uploads', express.static(uploadsDir));
+
+// Log requests
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
+// 1. Authentication Endpoint
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'البريد الإلكتروني وكلمة المرور مطلوبة.' });
+  }
+
+  try {
+    const user = await dbGet(
+      'SELECT id, email, name, role FROM users WHERE email = ? AND password = ?',
+      [email, password]
+    );
+
+    if (user) {
+      res.json({ user });
+    } else {
+      res.status(401).json({ error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.' });
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'حدث خطأ في الخادم.' });
+  }
+});
+
+// 2. Fetch Dashboard Data (KPIs + Progress Table)
+app.get('/api/dashboard', async (req, res) => {
+  try {
+    // A. Fetch categories and tasks
+    const categories = await dbAll('SELECT * FROM categories');
+    const tasks = await dbAll(`
+      SELECT t.*, c.name as category_name 
+      FROM tasks t 
+      JOIN categories c ON t.category_id = c.id
+    `);
+
+    // B. Calculate dynamic KPIs
+    // Count Completed Nazalat
+    const nazalatStats = await dbAll(`
+      SELECT zone, status, COUNT(*) as count 
+      FROM sub_units 
+      GROUP BY zone, status
+    `);
+
+    let completedA = 0, totalA = 37;
+    let completedB = 0, totalB = 38;
+    let completedC = 0, totalC = 38;
+
+    nazalatStats.forEach(stat => {
+      if (stat.zone === 'Zone A' && stat.status === 'منجز') completedA = stat.count;
+      if (stat.zone === 'Zone B' && stat.status === 'منجز') completedB = stat.count;
+      if (stat.zone === 'Zone C' && stat.status === 'منجز') completedC = stat.count;
+    });
+
+    const totalCompletedNazalat = completedA + completedB + completedC;
+    const totalNazalat = 113;
+    const nazalatProgressPercent = (totalCompletedNazalat / totalNazalat) * 100;
+
+    // Calculate applied marble pieces dynamically from database (direct sum of recorded applied quantities)
+    const marbleRows = await dbAll('SELECT * FROM marble_distribution');
+    let computedTotalWhite = 0;
+    let computedAppliedWhite = 0;
+    let computedTotalBrown = 0;
+    let computedAppliedBrown = 0;
+
+    marbleRows.forEach(item => {
+      const white = item.white_qty || 0;
+      const brown = item.brown_qty || 0;
+      computedTotalWhite += white;
+      computedTotalBrown += brown;
+      computedAppliedWhite += white;
+      computedAppliedBrown += brown;
+    });
+
+    const totalAppliedMarble = computedAppliedWhite + computedAppliedBrown;
+    const totalMarbleCount = computedTotalWhite + computedTotalBrown;
+
+    // C. Calculate average project progress
+    // Average of the progress_percent of all tasks
+    let sumProgress = 0;
+    tasks.forEach(t => {
+      // If it's the dynamic task, use the calculated percent only if not manual
+      if (t.name === 'تطبيك النزلات (محدث تلقائياً)' && t.is_manual === 0) {
+        t.progress_percent = parseFloat(nazalatProgressPercent.toFixed(2));
+        t.completed_quantity = totalCompletedNazalat;
+      }
+      sumProgress += t.progress_percent;
+    });
+    const overallProgress = sumProgress / tasks.length;
+
+    res.json({
+      categories,
+      tasks,
+      kpis: {
+        total_marble_pieces: totalMarbleCount,
+        applied_marble_pieces: totalAppliedMarble,
+        applied_white_marble: Math.round(computedAppliedWhite),
+        applied_brown_marble: Math.round(computedAppliedBrown),
+        overall_progress_percent: parseFloat(overallProgress.toFixed(2)),
+        skylight_progress_percent: 100.0, // Completed as per sheet details
+        nazalat_total: totalNazalat,
+        nazalat_completed: totalCompletedNazalat,
+        nazalat_progress_percent: parseFloat(nazalatProgressPercent.toFixed(2))
+      }
+    });
+  } catch (error) {
+    console.error('Fetch dashboard error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء جلب بيانات لوحة التحكم.' });
+  }
+});
+
+// 3. Fetch Sub-Units / Detailed tracking logs
+app.get('/api/nazalat', async (req, res) => {
+  const { zone, status } = req.query;
+
+  let query = 'SELECT * FROM sub_units';
+  const params = [];
+  const conditions = [];
+
+  if (zone) {
+    conditions.push('zone = ?');
+    params.push(zone);
+  }
+  if (status) {
+    conditions.push('status = ?');
+    params.push(status);
+  }
+
+  if (conditions.length > 0) {
+    query += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  query += ' ORDER BY serial_number ASC';
+
+  try {
+    const rows = await dbAll(query, params);
+    res.json(rows);
+  } catch (error) {
+    console.error('Fetch nazalat error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء جلب سجلات المتابعة.' });
+  }
+});
+
+// 4. Toggle Nazala Status (Admin only)
+app.post('/api/nazalat/:id/toggle', async (req, res) => {
+  const { id } = req.params;
+  const { userName, userRole } = req.body;
+
+  try {
+    // Get current status
+    const item = await dbGet('SELECT status, task_id, code, zone FROM sub_units WHERE id = ?', [id]);
+    if (!item) {
+      return res.status(404).json({ error: 'النزلة المطلوبة غير موجودة.' });
+    }
+
+    const newStatus = item.status === 'منجز' ? 'متبقي' : 'منجز';
+    const notes = newStatus === 'منجز' ? 'مطابق لجرودات الموقع' : 'قيد التجهيز والعمل';
+
+    // Update status
+    await dbRun('UPDATE sub_units SET status = ?, notes = ? WHERE id = ?', [newStatus, notes, id]);
+
+    // Recalculate parent task progress
+    const totalCountRow = await dbGet('SELECT COUNT(*) as count FROM sub_units WHERE task_id = ?', [item.task_id]);
+    const completedCountRow = await dbGet('SELECT COUNT(*) as count FROM sub_units WHERE task_id = ? AND status = ?', [item.task_id, 'منجز']);
+
+    const total = totalCountRow.count;
+    const completed = completedCountRow.count;
+    const progress = (completed / total) * 100;
+
+    await dbRun(
+      'UPDATE tasks SET completed_quantity = ?, progress_percent = ? WHERE id = ?',
+      [completed, parseFloat(progress.toFixed(2)), item.task_id]
+    );
+
+    // Auto-log system message
+    if (userName) {
+      const actionText = userName === 'المهندس المقيم' || userRole === 'admin'
+        ? `قام المهندس المقيم (${userName}) بتحديث حالة النزلة ${item.code} في ${item.zone} إلى: ${newStatus === 'منجز' ? 'منجزة (مكتملة)' : 'متبقية'}`
+        : `قام (${userName}) بتحديث حالة النزلة ${item.code} في ${item.zone} إلى: ${newStatus === 'منجز' ? 'منجزة (مكتملة)' : 'متبقية'}`;
+      
+      await dbRun(
+        `INSERT INTO daily_updates (user_id, sender_name, sender_role, message_text, media_url, media_type, reply_to_id)
+         VALUES (NULL, ?, ?, ?, NULL, NULL, NULL)`,
+        ['النظام', 'system', actionText]
+      );
+    }
+
+    res.json({
+      success: true,
+      id,
+      newStatus,
+      completed,
+      progress: parseFloat(progress.toFixed(2))
+    });
+  } catch (error) {
+    console.error('Toggle status error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء تحديث حالة النزلة.' });
+  }
+});
+
+// 5. Update Manual Task Progress (Admin only)
+app.post('/api/tasks/:id/progress', async (req, res) => {
+  const { id } = req.params;
+  const { completed_quantity, progress_percent, notes, userName, userRole } = req.body;
+
+  try {
+    const task = await dbGet('SELECT * FROM tasks WHERE id = ?', [id]);
+    if (!task) {
+      return res.status(404).json({ error: 'الفقرة المطلوبة غير موجودة.' });
+    }
+
+    let progress = 0;
+    let completed = null;
+
+    if (task.total_quantity !== null && task.total_quantity > 0) {
+      if (completed_quantity !== undefined) {
+        completed = parseFloat(completed_quantity);
+        if (isNaN(completed) || completed < 0) {
+          return res.status(400).json({ error: 'الكمية المنجزة يجب أن تكون رقماً موجباً.' });
+        }
+        if (completed > task.total_quantity) {
+          completed = task.total_quantity;
+        }
+        progress = parseFloat(((completed / task.total_quantity) * 100).toFixed(2));
+      } else if (progress_percent !== undefined) {
+        progress = parseFloat(progress_percent);
+        if (isNaN(progress) || progress < 0 || progress > 100) {
+          return res.status(400).json({ error: 'نسبة الإنجاز يجب أن تكون بين 0 و 100.' });
+        }
+        completed = parseFloat((task.total_quantity * (progress / 100)).toFixed(2));
+      } else {
+        progress = task.progress_percent;
+        completed = task.completed_quantity;
+      }
+    } else {
+      if (progress_percent !== undefined) {
+        progress = parseFloat(progress_percent);
+        if (isNaN(progress) || progress < 0 || progress > 100) {
+          return res.status(400).json({ error: 'نسبة الإنجاز يجب أن تكون بين 0 و 100.' });
+        }
+      } else {
+        progress = task.progress_percent;
+      }
+      completed = null;
+    }
+
+    // Build update query
+    let query = 'UPDATE tasks SET progress_percent = ?, completed_quantity = ?';
+    const params = [progress, completed];
+
+    if (notes !== undefined) {
+      query += ', notes = ?';
+      params.push(notes);
+    }
+
+    query += ' WHERE id = ?';
+    params.push(id);
+
+    await dbRun(query, params);
+
+    // Auto-log system message
+    if (userName) {
+      const actionText = `قام المهندس المقيم (${userName}) بتحديث تقدّم الفقرة "${task.name}" إلى: ${progress}% (الكمية المنجزة الحالية: ${completed || 0} من أصل ${task.total_quantity || '-'})` + (notes ? ` | ملاحظات الموقع: "${notes}"` : '');
+      
+      await dbRun(
+        `INSERT INTO daily_updates (user_id, sender_name, sender_role, message_text, media_url, media_type, reply_to_id)
+         VALUES (NULL, ?, ?, ?, NULL, NULL, NULL)`,
+        ['النظام', 'system', actionText]
+      );
+    }
+
+    res.json({
+      success: true,
+      id,
+      progress_percent: progress,
+      completed_quantity: completed,
+      notes
+    });
+  } catch (error) {
+    console.error('Update progress error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء تحديث البيانات.' });
+  }
+});
+
+// 6. Update Task Notes (Admin only)
+app.post('/api/tasks/:id/notes', async (req, res) => {
+  const { id } = req.params;
+  const { notes } = req.body;
+
+  try {
+    await dbRun('UPDATE tasks SET notes = ? WHERE id = ?', [notes, id]);
+    res.json({ success: true, id, notes });
+  } catch (error) {
+    console.error('Update notes error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء تحديث الملاحظات.' });
+  }
+});
+
+// 7. Fetch Marble Distribution
+app.get('/api/marble', async (req, res) => {
+  try {
+    const rows = await dbAll('SELECT * FROM marble_distribution');
+    res.json(rows);
+  } catch (error) {
+    console.error('Fetch marble distribution error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء جلب بيانات توزيع المرمر.' });
+  }
+});
+
+// 8. Update Marble Status & Quantities (Admin only)
+app.post('/api/marble/:id/status', async (req, res) => {
+  const { id } = req.params;
+  const { status, white_qty, brown_qty, userName, userRole } = req.body;
+
+  try {
+    const whiteVal = white_qty === undefined || white_qty === null ? null : parseInt(white_qty, 10);
+    const brownVal = brown_qty === undefined || brown_qty === null ? null : parseInt(brown_qty, 10);
+
+    await dbRun(
+      'UPDATE marble_distribution SET status = ?, white_qty = ?, brown_qty = ? WHERE id = ?',
+      [status, whiteVal, brownVal, id]
+    );
+
+    // Auto-log system message
+    if (userName) {
+      const item = await dbGet('SELECT * FROM marble_distribution WHERE id = ?', [id]);
+      if (item) {
+        const actionText = `قام المهندس المقيم (${userName}) بتحديث تفاصيل مرمر "${item.task_name}" في "${item.zone}": الأبيض=${whiteVal !== null ? whiteVal : '-'}، الجوزي=${brownVal !== null ? brownVal : '-'} | الحالة: "${status}"`;
+        
+        await dbRun(
+          `INSERT INTO daily_updates (user_id, sender_name, sender_role, message_text, media_url, media_type, reply_to_id)
+           VALUES (NULL, ?, ?, ?, NULL, NULL, NULL)`,
+          ['النظام', 'system', actionText]
+        );
+      }
+    }
+
+    res.json({ success: true, id, status, white_qty: whiteVal, brown_qty: brownVal });
+  } catch (error) {
+    console.error('Update marble status error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء تحديث الموقف الميداني للمرمر.' });
+  }
+});
+
+// ── Daily Updates / Chat API Endpoints ──
+
+// A. Fetch all daily updates and logs
+app.get('/api/daily-updates', async (req, res) => {
+  try {
+    const rows = await dbAll(`
+      SELECT d.*, u.name as user_name, u.role as user_role,
+             r.sender_name as reply_sender_name, r.message_text as reply_message_text, r.media_url as reply_media_url, r.media_type as reply_media_type
+      FROM daily_updates d
+      LEFT JOIN users u ON d.user_id = u.id
+      LEFT JOIN daily_updates r ON d.reply_to_id = r.id
+      ORDER BY d.created_at ASC
+    `);
+    res.json(rows);
+  } catch (error) {
+    console.error('Fetch daily updates error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء جلب سجل التحديث اليومي.' });
+  }
+});
+
+// B. Post a new message or upload media
+app.post('/api/daily-updates', async (req, res) => {
+  const { user_id, sender_name, sender_role, message_text, media_data, media_name, reply_to_id } = req.body;
+
+  if (!message_text && !media_data) {
+    return res.status(400).json({ error: 'محتوى الرسالة مطلوب.' });
+  }
+
+  try {
+    let media_url = null;
+    let media_type = null;
+
+    if (media_data) {
+      // Decode base64 file
+      const matches = media_data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      let buffer;
+      let extension = 'bin';
+
+      if (matches && matches.length === 3) {
+        const mimeType = matches[1];
+        buffer = Buffer.from(matches[2], 'base64');
+        
+        // Guess extension from mime type
+        if (mimeType.includes('image')) {
+          media_type = 'image';
+          extension = (mimeType.split('/')[1] || '').split(';')[0] || 'png';
+        } else if (mimeType.includes('video')) {
+          media_type = 'video';
+          extension = (mimeType.split('/')[1] || '').split(';')[0] || 'mp4';
+        } else if (mimeType.includes('audio')) {
+          media_type = 'audio';
+          extension = (mimeType.split('/')[1] || '').split(';')[0] || 'webm';
+        }
+      } else {
+        // Fallback: direct base64 string
+        buffer = Buffer.from(media_data, 'base64');
+        if (media_name) {
+          const ext = media_name.split('.').pop().toLowerCase();
+          extension = ext;
+          if (['mp4', 'webm', 'mov', 'ogg'].includes(ext)) {
+            if (media_name.startsWith('voice_')) {
+              media_type = 'audio';
+            } else {
+              media_type = 'video';
+            }
+          } else if (['mp3', 'wav', 'm4a', 'aac', 'opus', 'caf'].includes(ext)) {
+            media_type = 'audio';
+          } else {
+            media_type = 'image';
+          }
+        }
+      }
+
+      const filename = `upload_${Date.now()}_${Math.round(Math.random() * 1000)}.${extension}`;
+      const filePath = path.join(uploadsDir, filename);
+      fs.writeFileSync(filePath, buffer);
+      media_url = `/api/uploads/${filename}`;
+    }
+
+    // Insert message
+    const result = await dbRun(
+      `INSERT INTO daily_updates (user_id, sender_name, sender_role, message_text, media_url, media_type, reply_to_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [user_id || null, sender_name, sender_role, message_text || '', media_url, media_type, reply_to_id || null]
+    );
+
+    // Fetch the inserted message to return
+    const newMessage = await dbGet(`
+      SELECT d.*, u.name as user_name, u.role as user_role,
+             r.sender_name as reply_sender_name, r.message_text as reply_message_text, r.media_url as reply_media_url, r.media_type as reply_media_type
+      FROM daily_updates d
+      LEFT JOIN users u ON d.user_id = u.id
+      LEFT JOIN daily_updates r ON d.reply_to_id = r.id
+      WHERE d.id = ?
+    `, [result.id]);
+
+    res.json(newMessage);
+  } catch (error) {
+    console.error('Post daily update error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء إرسال الرسالة.' });
+  }
+});
+
+// ── Materials Consumption Tracking API Endpoints ──
+
+const consumptionFilePath = path.join(__dirname, 'data', 'materials_consumption.json');
+
+const readConsumptionData = () => {
+  try {
+    if (!fs.existsSync(consumptionFilePath)) {
+      return [];
+    }
+    const data = fs.readFileSync(consumptionFilePath, 'utf8');
+    return JSON.parse(data || '[]');
+  } catch (err) {
+    console.error('Error reading materials consumption file:', err);
+    return [];
+  }
+};
+
+const writeConsumptionData = (data) => {
+  try {
+    const dataDir = path.dirname(consumptionFilePath);
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    fs.writeFileSync(consumptionFilePath, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    console.error('Error writing materials consumption file:', err);
+    return false;
+  }
+};
+
+// GET all reports
+app.get('/api/materials-consumption', (req, res) => {
+  const data = readConsumptionData();
+  // Sort descending by date and time
+  data.sort((a, b) => new Date(b.date + 'T' + (b.start_time || '00:00')) - new Date(a.date + 'T' + (a.start_time || '00:00')));
+  res.json(data);
+});
+
+// POST a new report
+app.post('/api/materials-consumption', (req, res) => {
+  const report = req.body;
+  if (!report.date || !report.day || !report.prepared_by) {
+    return res.status(400).json({ error: 'Missing required report fields' });
+  }
+  const data = readConsumptionData();
+  const newReport = {
+    ...report,
+    id: Date.now().toString(),
+    created_at: new Date().toISOString()
+  };
+  data.push(newReport);
+  if (writeConsumptionData(data)) {
+    res.status(201).json(newReport);
+  } else {
+    res.status(500).json({ error: 'Failed to write consumption report data' });
+  }
+});
+
+// PUT (update) an existing report
+app.put('/api/materials-consumption/:id', (req, res) => {
+  const { id } = req.params;
+  const updatedReport = req.body;
+  const data = readConsumptionData();
+  const index = data.findIndex(item => item.id === id);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Report not found' });
+  }
+  
+  data[index] = {
+    ...data[index],
+    ...updatedReport,
+    updated_at: new Date().toISOString()
+  };
+  
+  if (writeConsumptionData(data)) {
+    res.json(data[index]);
+  } else {
+    res.status(500).json({ error: 'Failed to update consumption report data' });
+  }
+});
+
+// DELETE a report
+app.delete('/api/materials-consumption/:id', (req, res) => {
+  const { id } = req.params;
+  const data = readConsumptionData();
+  const index = data.findIndex(item => item.id === id);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Report not found' });
+  }
+  
+  data.splice(index, 1);
+  if (writeConsumptionData(data)) {
+    res.json({ success: true });
+  } else {
+    res.status(500).json({ error: 'Failed to delete consumption report data' });
+  }
+});
+
+// Serve static assets in production
+const clientDistPath = path.join(__dirname, '../dist');
+app.use(express.static(clientDistPath));
+
+// Handle SPA routing: send index.html for any request that isn't API
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(clientDistPath, 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
