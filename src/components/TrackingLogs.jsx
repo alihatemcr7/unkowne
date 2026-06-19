@@ -17,7 +17,7 @@ export default function TrackingLogs({ nazalat, user, onToggleNazala, loading, t
   });
 
   const handleToggle = async (id) => {
-    if (user.role !== 'admin') return;
+    if (user.role !== 'admin' && user.role !== 'super_admin') return;
     setTogglingId(id);
     try {
       await onToggleNazala(id);
@@ -175,12 +175,12 @@ export default function TrackingLogs({ nazalat, user, onToggleNazala, loading, t
                 {/* Toggle control */}
                 <button
                   onClick={() => handleToggle(n.id)}
-                  disabled={user.role !== 'admin' || isToggling}
+                  disabled={(user.role !== 'admin' && user.role !== 'super_admin') || isToggling}
                   className={`nazala-toggle-btn ${isCompleted ? 'completed' : ''}`}
                 >
                   {isToggling 
                     ? t('updating') 
-                    : user.role === 'admin' 
+                    : (user.role === 'admin' || user.role === 'super_admin') 
                       ? (isCompleted ? t('btnChangeToPending') : t('btnMarkAsDone')) 
                       : t('btnReadOnly')}
                 </button>

@@ -437,9 +437,15 @@ export default function DailyUpdates({ user, t, lang }) {
                 }}
               >
                 {/* User Sender details */}
-                {!isMyMessage && (
+                 {!isMyMessage && (
                   <span style={{ fontSize: '0.75rem', color: 'var(--muted)', marginRight: '6px', marginLeft: '6px', fontWeight: '600' }}>
-                    {msg.sender_name} ({msg.sender_role === 'admin' ? t('quickEngineer') : t('quickAdmin')})
+                    {msg.sender_name} ({
+                      msg.sender_role === 'super_admin'
+                        ? (lang === 'ar' ? 'المدير العام' : 'General Director')
+                        : msg.sender_role === 'admin'
+                          ? t('quickEngineer')
+                          : t('quickAdmin')
+                    })
                   </span>
                 )}
 

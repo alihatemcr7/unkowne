@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { dbAll, dbGet, dbRun } from './database.js';
+import { dbAll, dbGet, dbRun, db } from './database.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -405,13 +405,13 @@ app.post('/api/daily-updates', async (req, res) => {
 
     if (media_data) {
       // Decode base64 file
-      const matches = media_data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
       let buffer;
       let extension = 'bin';
 
-      if (matches && matches.length === 3) {
-        const mimeType = matches[1];
-        buffer = Buffer.from(matches[2], 'base64');
+      const parts = media_data.split(';base64,');
+      if (parts.length === 2) {
+        const mimeType = parts[0].replace('data:', '');
+        buffer = Buffer.from(parts[1], 'base64');
         
         // Guess extension from mime type
         if (mimeType.includes('image')) {
@@ -506,70 +506,252 @@ const writeConsumptionData = (data) => {
 };
 
 // GET all reports
-app.get('/api/materials-consumption', (req, res) => {
-  const data = readConsumptionData();
-  // Sort descending by date and time
-  data.sort((a, b) => new Date(b.date + 'T' + (b.start_time || '00:00')) - new Date(a.date + 'T' + (a.start_time || '00:00')));
-  res.json(data);
+app.get('/api/materials-consumption', async (req, res) => {
+  try {
+    const { data, error } = await db
+      .from('materials_consumption')
+      .select('*')
+      .order('date', { ascending: false });
+
+    if (error) {
+      if (error.code === '42P01' || error.message.includes('does not exist')) {
+        console.warn('Table "materials_consumption" does not exist in Supabase. Falling back to JSON file.');
+        throw new Error('FALLBACK');
+      }
+      throw error;
+    }
+
+    res.json(data);
+  } catch (err) {
+    const data = readConsumptionData();
+    data.sort((a, b) => new Date(b.date + 'T' + (b.start_time || '00:00')) - new Date(a.date + 'T' + (a.start_time || '00:00')));
+    res.json(data);
+  }
 });
 
 // POST a new report
-app.post('/api/materials-consumption', (req, res) => {
+app.post('/api/materials-consumption', async (req, res) => {
   const report = req.body;
   if (!report.date || !report.day || !report.prepared_by) {
     return res.status(400).json({ error: 'Missing required report fields' });
   }
-  const data = readConsumptionData();
-  const newReport = {
-    ...report,
-    id: Date.now().toString(),
-    created_at: new Date().toISOString()
-  };
-  data.push(newReport);
-  if (writeConsumptionData(data)) {
-    res.status(201).json(newReport);
-  } else {
-    res.status(500).json({ error: 'Failed to write consumption report data' });
+
+  try {
+    const newReport = {
+      id: Date.now().toString(),
+      date: report.date,
+      day: report.day,
+      start_time: report.start_time,
+      end_time: report.end_time,
+      prepared_by: report.prepared_by,
+      basics: report.basics,
+      marble: report.marble,
+      sealants: report.sealants,
+      bulk: report.bulk,
+      notes: report.notes,
+      created_at: new Date().toISOString()
+    };
+
+    const { data, error } = await db
+      .from('materials_consumption')
+      .insert([newReport])
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '42P01' || error.message.includes('does not exist')) {
+        console.warn('Table "materials_consumption" does not exist in Supabase. Falling back to JSON file.');
+        throw new Error('FALLBACK');
+      }
+      throw error;
+    }
+
+    res.status(201).json(data);
+  } catch (err) {
+    const data = readConsumptionData();
+    const newReport = {
+      ...report,
+      id: Date.now().toString(),
+      created_at: new Date().toISOString()
+    };
+    data.push(newReport);
+    if (writeConsumptionData(data)) {
+      res.status(201).json(newReport);
+    } else {
+      res.status(500).json({ error: 'Failed to write consumption report data' });
+    }
   }
 });
 
 // PUT (update) an existing report
-app.put('/api/materials-consumption/:id', (req, res) => {
+app.put('/api/materials-consumption/:id', async (req, res) => {
   const { id } = req.params;
   const updatedReport = req.body;
-  const data = readConsumptionData();
-  const index = data.findIndex(item => item.id === id);
-  if (index === -1) {
-    return res.status(404).json({ error: 'Report not found' });
-  }
-  
-  data[index] = {
-    ...data[index],
-    ...updatedReport,
-    updated_at: new Date().toISOString()
-  };
-  
-  if (writeConsumptionData(data)) {
-    res.json(data[index]);
-  } else {
-    res.status(500).json({ error: 'Failed to update consumption report data' });
+
+  try {
+    const { data, error } = await db
+      .from('materials_consumption')
+      .update({
+        date: updatedReport.date,
+        day: updatedReport.day,
+        start_time: updatedReport.start_time,
+        end_time: updatedReport.end_time,
+        prepared_by: updatedReport.prepared_by,
+        basics: updatedReport.basics,
+        marble: updatedReport.marble,
+        sealants: updatedReport.sealants,
+        bulk: updatedReport.bulk,
+        notes: updatedReport.notes
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '42P01' || error.message.includes('does not exist')) {
+        console.warn('Table "materials_consumption" does not exist in Supabase. Falling back to JSON file.');
+        throw new Error('FALLBACK');
+      }
+      throw error;
+    }
+
+    res.json(data);
+  } catch (err) {
+    const data = readConsumptionData();
+    const index = data.findIndex(item => item.id === id);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+    
+    data[index] = {
+      ...data[index],
+      ...updatedReport,
+      updated_at: new Date().toISOString()
+    };
+    
+    if (writeConsumptionData(data)) {
+      res.json(data[index]);
+    } else {
+      res.status(500).json({ error: 'Failed to update consumption report data' });
+    }
   }
 });
 
 // DELETE a report
-app.delete('/api/materials-consumption/:id', (req, res) => {
+app.delete('/api/materials-consumption/:id', async (req, res) => {
   const { id } = req.params;
-  const data = readConsumptionData();
-  const index = data.findIndex(item => item.id === id);
-  if (index === -1) {
-    return res.status(404).json({ error: 'Report not found' });
-  }
-  
-  data.splice(index, 1);
-  if (writeConsumptionData(data)) {
+
+  try {
+    const { error } = await db
+      .from('materials_consumption')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      if (error.code === '42P01' || error.message.includes('does not exist')) {
+        console.warn('Table "materials_consumption" does not exist in Supabase. Falling back to JSON file.');
+        throw new Error('FALLBACK');
+      }
+      throw error;
+    }
+
+    // Keep JSON fallback file in sync
+    const data = readConsumptionData();
+    const index = data.findIndex(item => item.id === id);
+    if (index !== -1) {
+      data.splice(index, 1);
+      writeConsumptionData(data);
+    }
+
     res.json({ success: true });
-  } else {
-    res.status(500).json({ error: 'Failed to delete consumption report data' });
+  } catch (err) {
+    const data = readConsumptionData();
+    const index = data.findIndex(item => item.id === id);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+    
+    data.splice(index, 1);
+    if (writeConsumptionData(data)) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ error: 'Failed to delete consumption report data' });
+    }
+  }
+});
+
+// ── User Management API Endpoints ──
+
+// GET all users
+app.get('/api/users', async (req, res) => {
+  try {
+    const { data, error } = await db
+      .from('users')
+      .select('id, email, name, role, password')
+      .order('id', { ascending: true });
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Fetch users error:', err);
+    res.status(500).json({ error: 'حدث خطأ أثناء جلب قائمة المستخدمين.' });
+  }
+});
+
+// POST a new user
+app.post('/api/users', async (req, res) => {
+  const { email, password, name, role } = req.body;
+  if (!email || !password || !name || !role) {
+    return res.status(400).json({ error: 'جميع الحقول مطلوبة.' });
+  }
+  try {
+    const { data, error } = await db
+      .from('users')
+      .insert([{ email, password, name, role }])
+      .select()
+      .single();
+    if (error) throw error;
+    res.status(201).json(data);
+  } catch (err) {
+    console.error('Create user error:', err);
+    res.status(500).json({ error: 'حدث خطأ أثناء إنشاء الحساب.' });
+  }
+});
+
+// PUT (update) a user
+app.put('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const { email, password, name, role } = req.body;
+  if (!email || !password || !name || !role) {
+    return res.status(400).json({ error: 'جميع الحقول مطلوبة.' });
+  }
+  try {
+    const { data, error } = await db
+      .from('users')
+      .update({ email, password, name, role })
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Update user error:', err);
+    res.status(500).json({ error: 'حدث خطأ أثناء تحديث الحساب.' });
+  }
+});
+
+// DELETE a user
+app.delete('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { error } = await db
+      .from('users')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Delete user error:', err);
+    res.status(500).json({ error: 'حدث خطأ أثناء حذف الحساب.' });
   }
 });
 

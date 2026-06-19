@@ -124,26 +124,13 @@ export default function Header({
           <div className="user-info">
             <span className="user-name">{user.name}</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <span className={`user-role-badge ${user.role === 'admin' ? 'role-admin' : 'role-viewer'}`}>
-                {user.role === 'admin' ? (lang === 'ar' ? 'مهندس الموقع' : 'Site Engineer') : (lang === 'ar' ? 'إدارة عليا' : 'Senior Management')}
+              <span className={`user-role-badge ${user.role === 'super_admin' ? 'role-super-admin' : user.role === 'admin' ? 'role-admin' : 'role-viewer'}`}>
+                {user.role === 'super_admin'
+                  ? (lang === 'ar' ? 'المدير العام' : 'General Director')
+                  : user.role === 'admin'
+                    ? (lang === 'ar' ? 'مهندس الموقع' : 'Site Engineer')
+                    : (lang === 'ar' ? 'إدارة عليا' : 'Senior Management')}
               </span>
-              
-              {/* Quick toggle link for review convenience */}
-              <button 
-                onClick={onRoleToggle}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--accent)',
-                  fontSize: '0.7rem',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                  padding: '0 2px'
-                }}
-                title={t('toggle')}
-              >
-                ({t('roleToggle')})
-              </button>
             </div>
           </div>
         </div>

@@ -179,25 +179,6 @@ export default function Login({ onLoginSuccess, t, lang, setLang, theme, setThem
           </button>
         </form>
 
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.25rem', marginTop: '0.5rem' }}>
-          <p className="login-subtitle" style={{ marginBottom: '0.75rem' }}>{t('quickAccess')}</p>
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button
-              onClick={() => autofillUser('admin')}
-              className="btn btn-secondary"
-              style={{ flex: 1, fontSize: '0.8rem', padding: '0.5rem 0' }}
-            >
-              {t('quickEngineer')}
-            </button>
-            <button
-              onClick={() => autofillUser('viewer')}
-              className="btn btn-secondary"
-              style={{ flex: 1, fontSize: '0.8rem', padding: '0.5rem 0' }}
-            >
-              {t('quickAdmin')}
-            </button>
-          </div>
-        </div>
         </BorderGlow>
       </motion.div>
     </div>

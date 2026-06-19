@@ -883,6 +883,21 @@ html[dir="ltr"] .user-profile {
   color: var(--accent);
 }
 
+.user-role-badge.role-super-admin {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+
+.user-role-badge.role-admin {
+  color: var(--success);
+}
+
+.user-role-badge.role-viewer {
+  color: var(--muted);
+}
+
 /* Login Page */
 .login-container {
   display: flex;

@@ -24,6 +24,10 @@ const seedData = async () => {
     // passwords: admin123 / viewer123 (plain for simplicity of inspection)
     await dbRun(
       'INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)',
+      ['admin@project.com', 'admin123', 'المدير العام', 'super_admin']
+    );
+    await dbRun(
+      'INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)',
       ['engineer@project.com', 'admin123', 'المهندس المقيم', 'admin']
     );
     await dbRun(

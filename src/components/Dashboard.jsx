@@ -58,7 +58,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
   ];
 
   const handleEditClick = (task) => {
-    if (user.role !== 'admin' || task.is_manual === 0) return;
+    if ((user.role !== 'admin' && user.role !== 'super_admin') || task.is_manual === 0) return;
     setEditingTask(task.id);
     setTempCompleted({ ...tempCompleted, [task.id]: task.completed_quantity ?? 0 });
     setTempProgress({ ...tempProgress, [task.id]: task.progress_percent });
@@ -355,7 +355,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
             <Grid size={20} style={{ color: 'var(--accent)' }} />
             {t('tableTitle')}
           </h3>
-          {user.role === 'admin' && (
+          {(user.role === 'admin' || user.role === 'super_admin') && (
             <span style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>
               {t('tableInstruction')}
             </span>
@@ -415,7 +415,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                         <tr 
                           key={task.id} 
                           onClick={() => !isEditing && handleEditClick(task)}
-                          style={{ cursor: (user.role === 'admin' && task.is_manual) ? 'pointer' : 'default' }}
+                          style={{ cursor: ((user.role === 'admin' || user.role === 'super_admin') && task.is_manual) ? 'pointer' : 'default' }}
                         >
                           <td style={{ color: 'var(--muted)', fontSize: '0.85rem', ...textDirectionStyle }}>
                             {translateText(cat.name, lang)}

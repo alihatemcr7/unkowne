@@ -13,6 +13,7 @@ import TrackingLogs from './components/TrackingLogs';
 import MaterialsReport from './components/MaterialsReport';
 import DailyUpdates from './components/DailyUpdates';
 import MaterialsConsumption from './components/MaterialsConsumption';
+import UsersManagement from './components/UsersManagement';
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -235,20 +236,6 @@ export default function App() {
   const displayIssuedBy = t('issuedBy');
   const displayReportDateLabel = t('reportDate');
 
-  const displaySignatures = [
-    {
-      title: lang === 'ar' ? 'المهندس المقيم' : 'Resident Engineer',
-      subtitle: lang === 'ar' ? 'الجهة المشرفة' : 'Supervising Authority'
-    },
-    {
-      title: lang === 'ar' ? 'مهندس الموقع' : 'Site Engineer',
-      subtitle: lang === 'ar' ? 'الشركة المنفذة' : 'Contracting Company'
-    },
-    {
-      title: lang === 'ar' ? 'مدير المشروع' : 'Project Manager',
-      subtitle: lang === 'ar' ? 'دائرة المشاريع' : 'Projects Department'
-    }
-  ];
 
   return (
     <div className="app-container">
@@ -425,18 +412,25 @@ export default function App() {
                 />
               </motion.div>
             )}
+
+            {activeTab === 'users-management' && (
+              <motion.div
+                key="users-management"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <UsersManagement 
+                  currentUser={user}
+                  t={t}
+                  lang={lang}
+                />
+              </motion.div>
+            )}
           </AnimatePresence>
         )}
 
-        {/* ── ذيل التوقيعات المطبوع ── */}
-        <div className="print-header" style={{ borderTop: '2px solid #333', borderBottom: 'none', marginTop: '4rem', paddingTop: '2rem', display: 'flex', justifyContent: 'space-around', paddingBottom: 0 }}>
-          {displaySignatures.map((sig, i) => (
-            <div key={i} style={{ textAlign: 'center', minWidth: '200px' }}>
-              <p style={{ fontWeight: '700' }}>{sig.title}</p>
-              <p style={{ fontSize: '0.85rem', color: '#555', marginTop: '3rem' }}>{sig.subtitle}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

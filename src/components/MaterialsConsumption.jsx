@@ -386,7 +386,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                                 >
                                   <Edit2 size={14} />
                                 </button>
-                                {user.role === 'admin' && (
+                                {(user.role === 'admin' || user.role === 'super_admin') && (
                                   <button 
                                     className="btn btn-secondary" 
                                     onClick={() => handleDelete(report.id)}

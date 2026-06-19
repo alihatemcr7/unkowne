@@ -24,7 +24,7 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
   const grandTotal = totalWhite + totalBrown;
 
   const handleEditClick = (item) => {
-    if (user.role !== 'admin') return;
+    if (user.role !== 'admin' && user.role !== 'super_admin') return;
     setEditingId(item.id);
     setTempStatus(item.status || '');
     setTempWhite(item.white_qty !== null ? String(item.white_qty) : '');
@@ -115,7 +115,7 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
               <Layers size={20} style={{ color: 'var(--accent)' }} />
               {t('tableMaterialsTitle')}
             </h3>
-            {user.role === 'admin' && (
+            {(user.role === 'admin' || user.role === 'super_admin') && (
               <span style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>
                 {t('tableMaterialsInstruction')}
               </span>
@@ -177,7 +177,7 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
                           <tr 
                             key={item.id}
                             onClick={() => !isEditing && handleEditClick(item)}
-                            style={{ cursor: user.role === 'admin' ? 'pointer' : 'default' }}
+                            style={{ cursor: (user.role === 'admin' || user.role === 'super_admin') ? 'pointer' : 'default' }}
                           >
                             <td style={{ color: 'var(--muted)', fontSize: '0.85rem', ...textDirectionStyle }}>
                               {lang === 'ar' ? item.zone.replace('Zone', 'المنطقة') : item.zone}

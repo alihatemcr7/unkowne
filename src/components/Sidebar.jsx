@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, ClipboardList, Layers, LogOut, ChevronLeft, ChevronRight, Construction, MessageSquare, FileText } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, Layers, LogOut, ChevronLeft, ChevronRight, Construction, MessageSquare, FileText, Users } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, user, onLogout, t, lang, mobileOpen, setMobileOpen }) {
   const menuItems = [
@@ -9,6 +9,14 @@ export default function Sidebar({ activeTab, setActiveTab, collapsed, setCollaps
     { id: 'materials-consumption', label: t('menuMaterialsConsumption'), icon: FileText },
     { id: 'daily-updates', label: lang === 'ar' ? 'التحديث اليومي' : 'Daily Log & Chat', icon: MessageSquare }
   ];
+
+  if (user && user.role === 'super_admin') {
+    menuItems.push({
+      id: 'users-management',
+      label: lang === 'ar' ? 'إدارة الحسابات' : 'Users Management',
+      icon: Users
+    });
+  }
 
   return (
     <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
