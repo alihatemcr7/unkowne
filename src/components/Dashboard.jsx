@@ -240,13 +240,19 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
               >
                 <defs>
                   <linearGradient id="progressGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.35}/>
                     <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.95}/>
                   </linearGradient>
                   <linearGradient id="successGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.35}/>
                     <stop offset="100%" stopColor="#10b981" stopOpacity={0.95}/>
                   </linearGradient>
+                  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.4" floodColor="#f59e0b" />
+                  </filter>
+                  <filter id="successShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.4" floodColor="#10b981" />
+                  </filter>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" horizontal={false} />
                 <XAxis 
@@ -280,12 +286,16 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                   radius={lang === 'ar' ? [4, 0, 0, 4] : [0, 4, 4, 0]}
                   barSize={12}
                 >
-                  {chartData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry[lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'] === 100 ? 'url(#successGradient)' : 'url(#progressGradient)'} 
-                    />
-                  ))}
+                  {chartData.map((entry, index) => {
+                    const is100 = entry[lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'] === 100;
+                    return (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={is100 ? 'url(#successGradient)' : 'url(#progressGradient)'} 
+                        filter={is100 ? 'url(#successShadow)' : 'url(#shadow)'}
+                      />
+                    );
+                  })}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -301,6 +311,19 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
           <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>
             <div style={{ width: '200px', height: '200px', minWidth: 0 }}>
               <PieChart width={200} height={200}>
+                <defs>
+                  <linearGradient id="whiteMarbleGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity={0.95}/>
+                    <stop offset="100%" stopColor="#94a3b8" stopOpacity={0.8}/>
+                  </linearGradient>
+                  <linearGradient id="brownMarbleGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#fbbf24" stopOpacity={0.95}/>
+                    <stop offset="100%" stopColor="#b45309" stopOpacity={0.8}/>
+                  </linearGradient>
+                  <filter id="pieShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.4" floodColor="#000000" />
+                  </filter>
+                </defs>
                 <Pie
                   data={marbleChartData}
                   cx="50%"
@@ -311,7 +334,11 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                   dataKey="value"
                 >
                   {marbleChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={index === 0 ? 'url(#whiteMarbleGrad)' : 'url(#brownMarbleGrad)'} 
+                      filter="url(#pieShadow)"
+                    />
                   ))}
                 </Pie>
                 <Tooltip 
@@ -333,7 +360,15 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', paddingRight: '1rem', paddingLeft: '1rem' }}>
               {marbleChartData.map((entry, index) => (
                 <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '3px', backgroundColor: entry.color, border: '1px solid var(--border)' }}></div>
+                  <div style={{ 
+                    width: '12px', 
+                    height: '12px', 
+                    borderRadius: '3px', 
+                    background: index === 0 
+                      ? 'linear-gradient(135deg, #ffffff, #94a3b8)' 
+                      : 'linear-gradient(135deg, #fbbf24, #b45309)', 
+                    border: '1px solid var(--border)' 
+                  }}></div>
                   <span style={{ color: 'var(--muted)' }}>{entry.name}:</span>
                   <span style={{ fontWeight: '700', fontFamily: 'var(--font-english)' }}>{entry.value.toLocaleString()}</span>
                 </div>

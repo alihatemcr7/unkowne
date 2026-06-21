@@ -52,6 +52,7 @@ export default function DailyUpdates({ user, t, lang }) {
   // Fetch messages
   const fetchMessages = async (showIndicator = false) => {
     if (showIndicator) setRefreshing(true);
+    if (messages.length === 0) setLoading(true);
     try {
       const res = await fetch('/api/daily-updates');
       if (res.ok) {
@@ -62,6 +63,7 @@ export default function DailyUpdates({ user, t, lang }) {
       console.error('Error fetching logs:', err);
     } finally {
       setRefreshing(false);
+      setLoading(false);
     }
   };
 
@@ -628,7 +630,40 @@ export default function DailyUpdates({ user, t, lang }) {
           gap: '0.25rem'
         }}
       >
-        {messages.length === 0 ? (
+        {loading && messages.length === 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0.5rem' }}>
+            {[1, 2, 3].map((i) => (
+              <div 
+                key={i} 
+                style={{ 
+                  display: 'flex', 
+                  gap: '0.75rem', 
+                  alignSelf: i % 2 === 0 ? 'flex-end' : 'flex-start',
+                  flexDirection: i % 2 === 0 ? 'row-reverse' : 'row',
+                  width: '70%',
+                  alignItems: 'flex-start'
+                }}
+              >
+                <div className="skeleton-hint" style={{ width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }}></div>
+                <div 
+                  className="glass-panel" 
+                  style={{ 
+                    padding: '0.75rem 1rem', 
+                    borderRadius: i % 2 === 0 ? '16px 4px 16px 16px' : '4px 16px 16px 16px',
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <div className="skeleton-hint" style={{ width: '40%', height: '12px', borderRadius: '4px' }}></div>
+                  <div className="skeleton-hint" style={{ width: '90%', height: '16px', borderRadius: '4px' }}></div>
+                  <div className="skeleton-hint" style={{ width: '60%', height: '16px', borderRadius: '4px' }}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : messages.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem', color: 'var(--muted)' }}>
             <Bot size={40} style={{ opacity: 0.5 }} />
             <p style={{ fontSize: '0.85rem' }}>

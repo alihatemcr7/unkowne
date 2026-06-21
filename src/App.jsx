@@ -240,6 +240,11 @@ export default function App() {
 
   return (
     <div className="app-container">
+      {/* Dynamic Ambient Background Blobs for Glassmorphism Refraction */}
+      <div className="ambient-blob blob-teal" />
+      <div className="ambient-blob blob-amber" />
+      <div className="ambient-blob blob-purple" />
+
       {/* ── ترويسة التقرير المطبوع — مأخوذة من CONFIG_PDF ── */}
       <div className="print-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

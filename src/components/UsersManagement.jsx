@@ -270,8 +270,34 @@ export default function UsersManagement({ currentUser, t, lang }) {
             </div>
 
             {loading && users.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)' }}>
-                {lang === 'ar' ? 'جاري التحميل...' : 'Loading accounts...'}
+              <div className="table-responsive">
+                <table className="project-table" style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
+                  <thead>
+                    <tr>
+                      <th>{lang === 'ar' ? 'الاسم الكامل' : 'Full Name'}</th>
+                      <th>{lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}</th>
+                      <th>{lang === 'ar' ? 'نوع الحساب / الصلاحية' : 'Account Type / Role'}</th>
+                      <th>{lang === 'ar' ? 'كلمة المرور' : 'Password'}</th>
+                      <th style={{ textAlign: 'center' }}>{lang === 'ar' ? 'الإجراءات' : 'Actions'}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[1, 2, 3].map((i) => (
+                      <tr key={i}>
+                        <td><div className="skeleton-hint" style={{ width: '120px', height: '16px', borderRadius: '4px' }}></div></td>
+                        <td><div className="skeleton-hint" style={{ width: '180px', height: '16px', borderRadius: '4px' }}></div></td>
+                        <td><div className="skeleton-hint" style={{ width: '90px', height: '22px', borderRadius: '12px' }}></div></td>
+                        <td><div className="skeleton-hint" style={{ width: '80px', height: '16px', borderRadius: '4px' }}></div></td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
+                            <div className="skeleton-hint" style={{ width: '32px', height: '28px', borderRadius: '8px' }}></div>
+                            <div className="skeleton-hint" style={{ width: '32px', height: '28px', borderRadius: '8px' }}></div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             ) : (
               <div className="table-responsive">
