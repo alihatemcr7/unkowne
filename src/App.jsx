@@ -8,6 +8,7 @@ import dictionary, { translateText } from './utils/translations';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Login from './components/Login';
+import companyLogo from './assets/company-logo.webp';
 import Dashboard from './components/Dashboard';
 import TrackingLogs from './components/TrackingLogs';
 import MaterialsReport from './components/MaterialsReport';
@@ -242,8 +243,8 @@ export default function App() {
       {/* ── ترويسة التقرير المطبوع — مأخوذة من CONFIG_PDF ── */}
       <div className="print-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div className="print-logo">
-            <Construction size={32} />
+          <div className="print-logo" style={{ width: '48px', height: '48px', background: '#fff', padding: '4px', borderRadius: '8px' }}>
+            <img src={companyLogo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <div>
             <h2 style={{ fontSize: '1.4rem', fontWeight: '800' }}>{displayProjectName}</h2>

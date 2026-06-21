@@ -1,5 +1,6 @@
 import React from 'react';
-import { LayoutDashboard, ClipboardList, Layers, LogOut, ChevronLeft, ChevronRight, Construction, MessageSquare, FileText, Users } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, Layers, LogOut, ChevronLeft, ChevronRight, MessageSquare, FileText, Users } from 'lucide-react';
+import companyLogo from '../assets/company-logo.webp';
 
 export default function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, user, onLogout, t, lang, mobileOpen, setMobileOpen }) {
   const menuItems = [
@@ -21,8 +22,8 @@ export default function Sidebar({ activeTab, setActiveTab, collapsed, setCollaps
   return (
     <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
       <div className="sidebar-header">
-        <div className="sidebar-logo">
-          <Construction size={22} style={{ color: 'var(--bg-base)' }} />
+        <div className="sidebar-logo" style={{ background: '#fff', padding: '4px', flexShrink: 0 }}>
+          <img src={companyLogo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         <span className="sidebar-title">{t('sidebarTitle')}</span>
       </div>

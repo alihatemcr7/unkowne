@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Eye, EyeOff, Construction, Sun, Moon, Languages } from 'lucide-react';
-
+import { Shield, Eye, EyeOff, Sun, Moon, Languages } from 'lucide-react';
+import companyLogo from '../assets/company-logo.webp';
 import BorderGlow from './BorderGlow';
 
 export default function Login({ onLoginSuccess, t, lang, setLang, theme, setTheme }) {
@@ -101,8 +101,8 @@ export default function Login({ onLoginSuccess, t, lang, setLang, theme, setThem
           animated={true}
         >
           <div className="login-logo-container">
-          <div className="sidebar-logo login-logo">
-            <Construction size={28} className="text-bg-base" />
+          <div className="sidebar-logo login-logo" style={{ background: '#fff', padding: '4px' }}>
+            <img src={companyLogo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <h2 className="login-title">{t('loginTitle')}</h2>
           <p className="login-subtitle">{t('loginSubtitle')}</p>

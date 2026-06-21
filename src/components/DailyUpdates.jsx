@@ -70,7 +70,7 @@ export default function DailyUpdates({ user, t, lang }) {
     fetchMessages();
     const interval = setInterval(() => {
       fetchMessages(false);
-    }, 4000); // Poll every 4 seconds for live chat feel
+    }, 30000); // Poll every 30 seconds to reduce lag
     return () => clearInterval(interval);
   }, []);
 

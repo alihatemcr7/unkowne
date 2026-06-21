@@ -219,15 +219,17 @@ html[dir="ltr"] textarea {
 }
 
 .sidebar.collapsed {
-  width: 100px;
+  width: 72px;
 }
 
 .sidebar-header {
-  padding: var(--space-6);
+  padding: var(--space-4) var(--space-5);
   display: flex;
   align-items: center;
   gap: var(--space-3);
   border-bottom: 1px solid var(--border-soft);
+  overflow: hidden;
+  min-width: 0;
 }
 
 .sidebar-logo {
@@ -244,10 +246,14 @@ html[dir="ltr"] textarea {
 }
 
 .sidebar-title {
-  font-size: var(--text-lg);
+  font-size: 0.82rem;
   font-weight: 800;
   color: var(--fg);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
   opacity: 1;
   transition: opacity var(--motion-fast);
 }
@@ -1566,3 +1572,116 @@ html[dir="ltr"] .user-profile {
     font-size: 1.2rem !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+ * Print Styles for Specific Report Printing
+ * ───────────────────────────────────────────────────────────── */
+.print-report-view {
+  display: none;
+}
+
+@media print {
+  /* Hide screen-only elements */
+  body.print-specific-report-active .screen-only-view,
+  body.print-specific-report-active .sidebar,
+  body.print-specific-report-active .header {
+    display: none !important;
+  }
+
+  /* Reset container styles to allow clean white page printing */
+  body.print-specific-report-active .app-container {
+    display: block !important;
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+  }
+  
+  body.print-specific-report-active .app-container::before,
+  body.print-specific-report-active .app-container::after {
+    display: none !important;
+  }
+
+  body.print-specific-report-active .main-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  body.print-specific-report-active .print-report-view {
+    display: block !important;
+    background: #fff !important;
+    color: #000 !important;
+    width: 100% !important;
+    padding: 1.5cm !important;
+    direction: rtl !important;
+    font-family: 'Cairo', 'Inter', 'Noto Sans Arabic', 'Roboto', sans-serif !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Style headings and tables for clean paper print */
+  body.print-specific-report-active h1,
+  body.print-specific-report-active h2,
+  body.print-specific-report-active h3,
+  body.print-specific-report-active h4 {
+    color: #000 !important;
+    margin-top: 0 !important;
+    font-weight: bold !important;
+  }
+
+  body.print-specific-report-active table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 1rem !important;
+    margin-bottom: 1.5rem !important;
+    font-size: 11pt !important;
+    direction: rtl !important;
+    text-align: right !important;
+  }
+
+  body.print-specific-report-active th,
+  body.print-specific-report-active td {
+    border: 1px solid #333 !important;
+    padding: 8px 10px !important;
+    color: #000 !important;
+    background: transparent !important;
+  }
+
+  body.print-specific-report-active th {
+    background-color: #f3f4f6 !important;
+    font-weight: bold !important;
+    text-align: inherit !important;
+  }
+
+  body.print-specific-report-active .print-header-layout {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 3px double #000 !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  body.print-specific-report-active .print-section {
+    page-break-inside: avoid !important;
+    margin-bottom: 2rem !important;
+  }
+
+  body.print-specific-report-active .print-signatures {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 2rem !important;
+    margin-top: 3rem !important;
+    border-top: 1px dashed #333 !important;
+    padding-top: 1.5rem !important;
+    text-align: center !important;
+    font-size: 11pt !important;
+  }
+
+  body.print-specific-report-active .print-signature-box {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3rem !important;
+  }
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layers, Calendar, Clock, User, Save, Trash2, Edit2, 
+  Layers, Calendar, Clock, User, Save, Trash2, Edit2, Copy, Printer,
   Plus, ArrowLeft, ArrowRight, CheckCircle2, AlertCircle, FileText, Sparkles
 } from 'lucide-react';
 
@@ -63,6 +63,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [isEditingId, setIsEditingId] = useState(null);
+  const [isCloned, setIsCloned] = useState(false);
   const [showAutoSaveIndicator, setShowAutoSaveIndicator] = useState(false);
   const [hasRestoredDraft, setHasRestoredDraft] = useState(false);
   const [expandedReportId, setExpandedReportId] = useState(null);
@@ -86,6 +87,351 @@ export default function MaterialsConsumption({ user, t, lang }) {
   useEffect(() => {
     fetchReports();
   }, []);
+
+  // ── Generate and print a beautiful PDF report in a new window ──
+  const handlePrintReport = (report) => {
+    const dayLabel = getDayTranslation(report.day || '');
+    const zones = ['zone_a', 'zone_b', 'zone_c'];
+    const zoneNames = { zone_a: 'زون A', zone_b: 'زون B', zone_c: 'زون C' };
+
+    // Build marble rows
+    let marbleRows = '';
+    zones.forEach(zone => {
+      const w = report.marble?.[zone]?.white || {};
+      const b = report.marble?.[zone]?.brown || {};
+      marbleRows += `
+        <tr>
+          <td rowspan="2" style="vertical-align:middle;font-weight:700;background:#f8f9fa;">${zoneNames[zone]}</td>
+          <td>مرمر أبيض</td>
+          <td style="text-align:center">${w.skiliat || 0}</td>
+          <td style="text-align:center">${w.pieces_per_skilia || 198}</td>
+          <td style="text-align:center">${w.loose || 0}</td>
+          <td style="text-align:center;font-weight:700;">${(w.total || 0).toLocaleString()}</td>
+        </tr>
+        <tr>
+          <td style="color:#b45309;">مرمر جوزي</td>
+          <td style="text-align:center">${b.skiliat || 0}</td>
+          <td style="text-align:center">${b.pieces_per_skilia || 198}</td>
+          <td style="text-align:center">${b.loose || 0}</td>
+          <td style="text-align:center;font-weight:700;color:#b45309;">${(b.total || 0).toLocaleString()}</td>
+        </tr>`;
+    });
+
+    // Build basics rows
+    let basicsRows = '';
+    const basicsLabels = {
+      varnish: 'وارنيش', granite_granules: 'حبيبات كرانيت',
+      brown_paint: 'صبغ لون جوزي', gray_base: 'أساس رصاصي',
+      putty: 'معجون', primer: 'برايمر', roller: 'رولة'
+    };
+    Object.entries(report.basics || {}).forEach(([key, item]) => {
+      basicsRows += `<tr><td>${basicsLabels[key] || key}</td><td style="text-align:center">${item.pulled || '-'}</td><td style="text-align:center">${item.remaining || '-'}</td></tr>`;
+    });
+
+    // Build sealants rows
+    let sealantsRows = '';
+    const sealantsLabels = {
+      beige_paint: 'صوصج بيجي', white_paint: 'صوصج أبيض',
+      primer: 'برايمر', tape: 'تيب لاصق',
+      sponge_1cm: 'حبل اسفنجي 1 سم', sponge_2cm: 'حبل اسفنجي 2 سم', sponge_3cm: 'حبل اسفنجي 3 سم'
+    };
+    Object.entries(report.sealants || {}).forEach(([key, item]) => {
+      sealantsRows += `<tr><td>${sealantsLabels[key] || key}</td><td style="text-align:center">${item.pulled || '-'}</td><td style="text-align:center">${item.remaining || '-'}</td></tr>`;
+    });
+
+    const notesBlock = report.notes
+      ? `<div class="notes-box"><div class="section-label">الملاحظات</div><p>${report.notes}</p></div>`
+      : '';
+
+    const html = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>جرد استهلاك المواد اليومي - ${report.date}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Cairo', 'Noto Sans Arabic', Arial, sans-serif;
+      color: #1a1a2e;
+      background: #ffffff;
+      direction: rtl;
+      font-size: 11pt;
+      line-height: 1.6;
+    }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 15mm 18mm 20mm 18mm;
+      background: #fff;
+    }
+    /* ── Header ── */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #1a1a2e;
+      margin-bottom: 20px;
+    }
+    .header-logo {
+      width: 56px; height: 56px;
+      background: #1a1a2e;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #f59e0b;
+      font-size: 28px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .header-org { display: flex; align-items: center; gap: 12px; }
+    .org-text h1 { font-size: 15pt; font-weight: 900; color: #1a1a2e; }
+    .org-text p { font-size: 9.5pt; color: #555; margin-top: 2px; }
+    .header-meta { text-align: left; font-size: 9.5pt; color: #444; line-height: 1.9; }
+    .header-meta .doc-title { font-size: 13pt; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+    .meta-badge {
+      display: inline-block;
+      background: #f59e0b;
+      color: #fff;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 9pt;
+      margin-bottom: 4px;
+    }
+    /* ── Info Bar ── */
+    .info-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border: 1.5px solid #d0d0d8;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .info-cell {
+      padding: 8px 12px;
+      border-left: 1px solid #d0d0d8;
+      text-align: center;
+    }
+    .info-cell:last-child { border-left: none; }
+    .info-cell .lbl { font-size: 8.5pt; color: #888; font-weight: 600; }
+    .info-cell .val { font-size: 10.5pt; font-weight: 800; color: #1a1a2e; margin-top: 2px; }
+    /* ── Section ── */
+    .section { margin-bottom: 20px; }
+    .section-title {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #fff;
+      background: #1a1a2e;
+      padding: 7px 14px;
+      border-radius: 6px 6px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .num {
+      background: #f59e0b;
+      color: #1a1a2e;
+      border-radius: 50%;
+      width: 22px; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 10pt; font-weight: 900;
+    }
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5pt;
+      border: 1.5px solid #d0d0d8;
+      border-top: none;
+    }
+    th {
+      background: #f0f0f5;
+      font-weight: 700;
+      color: #333;
+      padding: 8px 10px;
+      border: 1px solid #d0d0d8;
+      text-align: right;
+    }
+    td {
+      padding: 7px 10px;
+      border: 1px solid #e0e0e8;
+      color: #1a1a2e;
+    }
+    tbody tr:nth-child(even) { background: #fafafa; }
+    tbody tr:hover { background: #fff8e6; }
+    /* ── Bulk Row ── */
+    .bulk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border: 1.5px solid #d0d0d8;
+      border-top: none;
+    }
+    .bulk-cell {
+      padding: 10px 14px;
+      border-left: 1px solid #d0d0d8;
+      text-align: center;
+    }
+    .bulk-cell:last-child { border-left: none; }
+    .bulk-cell .bc-lbl { font-size: 9pt; color: #888; font-weight: 600; }
+    .bulk-cell .bc-val { font-size: 12pt; font-weight: 800; color: #1a1a2e; margin-top: 3px; }
+    /* ── Notes ── */
+    .notes-box {
+      border: 1.5px solid #f59e0b;
+      border-radius: 0 0 6px 6px;
+      padding: 12px 14px;
+      background: #fffbeb;
+      border-top: none;
+    }
+    .notes-box .section-label { font-size: 9pt; color: #b45309; font-weight: 700; margin-bottom: 5px; }
+    .notes-box p { font-size: 10.5pt; color: #444; line-height: 1.7; font-style: italic; }
+    /* ── Signatures ── */
+    .signatures {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px dashed #bbb;
+    }
+    .sig-box {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+    .sig-box .sig-title { font-size: 10pt; font-weight: 800; color: #1a1a2e; margin-bottom: 8px; }
+    .sig-box .sig-line {
+      border-top: 1px solid #999;
+      margin: 28px 8px 6px;
+      padding-top: 4px;
+      font-size: 8.5pt;
+      color: #888;
+    }
+    /* ── Footer ── */
+    .report-footer {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      color: #aaa;
+    }
+    /* ── Print ── */
+    @media print {
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .page { width: 100%; padding: 10mm 14mm; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <div class="report-header">
+      <div class="header-org">
+        <div class="header-logo" style="background: transparent; border-radius: 0; width: 80px; height: 80px;">
+          <img src="https://mvco-iq.com/wp-content/uploads/2024/10/cropped-2color_logo.webp" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+        </div>
+        <div class="org-text">
+          <h1>متابعة موقع الجندي المجهول</h1>
+          <p>شركة رؤية الحداثة للخدمات الهندسية والاستثمار العقاري</p>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="doc-title">تقرير جرد واستهلاك المواد اليومي</div>
+        <div class="meta-badge">وثيقة رسمية</div><br/>
+        <span>التاريخ: <strong>${report.date}</strong></span><br/>
+        <span>اليوم: <strong>${dayLabel}</strong></span>
+      </div>
+    </div>
+
+    <!-- INFO BAR -->
+    <div class="info-bar">
+      <div class="info-cell"><div class="lbl">التاريخ</div><div class="val">${report.date}</div></div>
+      <div class="info-cell"><div class="lbl">اليوم</div><div class="val">${dayLabel}</div></div>
+      <div class="info-cell"><div class="lbl">وقت المباشرة</div><div class="val">${report.start_time || '-'}</div></div>
+      <div class="info-cell"><div class="lbl">وقت الانتهاء</div><div class="val">${report.end_time || '-'}</div></div>
+      <div class="info-cell"><div class="lbl">معد التقرير</div><div class="val">${report.prepared_by || '-'}</div></div>
+    </div>
+
+    <!-- SECTION 1: BASICS -->
+    <div class="section">
+      <div class="section-title"><span class="num">1</span> الماربلتكس والمواد الأساسية</div>
+      <table>
+        <thead><tr><th style="width:50%">المادة</th><th style="width:25%;text-align:center">الكمية المسحوبة</th><th style="width:25%;text-align:center">الكمية المتبقية</th></tr></thead>
+        <tbody>${basicsRows || '<tr><td colspan="3" style="text-align:center;color:#aaa;">لا بيانات</td></tr>'}</tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 2: MARBLE -->
+    <div class="section">
+      <div class="section-title"><span class="num">2</span> جرد المرمر (حسب الزون واللون)</div>
+      <table>
+        <thead><tr><th>الزون</th><th>النوع</th><th style="text-align:center">عدد السكيبات</th><th style="text-align:center">قطع/سكيبة</th><th style="text-align:center">الفرط</th><th style="text-align:center">المجموع</th></tr></thead>
+        <tbody>${marbleRows || '<tr><td colspan="6" style="text-align:center;color:#aaa;">لا بيانات</td></tr>'}</tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 3: SEALANTS -->
+    <div class="section">
+      <div class="section-title"><span class="num">3</span> جرد الصوصج والمواد العازلة</div>
+      <table>
+        <thead><tr><th style="width:50%">المادة</th><th style="width:25%;text-align:center">الكمية المسحوبة</th><th style="width:25%;text-align:center">الكمية المتبقية</th></tr></thead>
+        <tbody>${sealantsRows || '<tr><td colspan="3" style="text-align:center;color:#aaa;">لا بيانات</td></tr>'}</tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 4: BULK -->
+    <div class="section">
+      <div class="section-title"><span class="num">4</span> المواد السائبة (أسمنت ورمل وفوم)</div>
+      <div class="bulk-grid">
+        <div class="bulk-cell"><div class="bc-lbl">كمية الأسمنت</div><div class="bc-val">${report.bulk?.cement || '-'}</div></div>
+        <div class="bulk-cell"><div class="bc-lbl">كمية الرمل</div><div class="bc-val">${report.bulk?.sand || '-'}</div></div>
+        <div class="bulk-cell"><div class="bc-lbl">الفوم (مسحوب / متبقي)</div><div class="bc-val">${report.bulk?.foam?.pulled || '-'} / ${report.bulk?.foam?.remaining || '-'}</div></div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    ${report.notes ? `<div class="section"><div class="section-title"><span class="num">5</span> ملاحظات</div>${notesBlock}</div>` : ''}
+
+    <!-- SIGNATURES -->
+    <div class="signatures">
+      <div class="sig-box"><div class="sig-title">دائرة المهندس المقيم</div><div class="sig-line">التوقيع والختم</div></div>
+      <div class="sig-box"><div class="sig-title">الشركة المنفذة (جرد المخزن)</div><div class="sig-line">التوقيع والختم</div></div>
+      <div class="sig-box"><div class="sig-title">ممثل الجهة المستفيدة</div><div class="sig-line">التوقيع والختم</div></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="report-footer">
+      <span>متابعة موقع الجندي المجهول &mdash; شركة رؤية الحداثة للخدمات الهندسية والاستثمار العقاري</span>
+      <span>تم الإنشاء: ${new Date().toLocaleDateString('ar-EG')} &nbsp;|&nbsp; ${new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</span>
+    </div>
+  </div>
+  <script>
+    window.onload = function() {
+      setTimeout(function() { window.print(); }, 800);
+    };
+  <\/script>
+</body>
+</html>`;
+
+    const win = window.open('', '_blank', 'width=900,height=1100');
+    if (win) {
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+    } else {
+      alert('يرجى السماح بالنوافذ المنبثقة لتصدير التقرير PDF');
+    }
+  };
 
   // 2. Load draft from localStorage on switching to Form Mode
   useEffect(() => {
@@ -192,6 +538,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
         }
         setFormData(INITIAL_FORM_STATE);
         setIsEditingId(null);
+        setIsCloned(false);
         setViewMode('history');
         fetchReports();
       } else {
@@ -225,6 +572,25 @@ export default function MaterialsConsumption({ user, t, lang }) {
   const handleEdit = (report) => {
     setFormData(report);
     setIsEditingId(report.id);
+    setIsCloned(false);
+    setViewMode('form');
+  };
+
+  // 8. Clone/Copy Setup
+  const handleClone = (report) => {
+    const todayDate = new Date().toISOString().split('T')[0];
+    const dayOfWeekIndex = new Date().getDay();
+    const todayDayArabic = DAYS_OF_WEEK.ar[dayOfWeekIndex];
+
+    setFormData({
+      ...report,
+      id: undefined, // Clear ID so it saves as new
+      date: todayDate,
+      day: todayDayArabic,
+      created_at: undefined
+    });
+    setIsEditingId(null);
+    setIsCloned(true);
     setViewMode('form');
   };
 
@@ -267,7 +633,8 @@ export default function MaterialsConsumption({ user, t, lang }) {
 
   return (
     <div style={{ width: '100%' }}>
-      {/* Header controls */}
+      <div className="screen-only-view">
+        {/* Header controls */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -284,9 +651,14 @@ export default function MaterialsConsumption({ user, t, lang }) {
             <button 
               className="btn btn-primary"
               onClick={() => {
-                setFormData(INITIAL_FORM_STATE);
-                setIsEditingId(null);
-                setViewMode('form');
+                if (reports && reports.length > 0) {
+                  handleClone(reports[0]);
+                } else {
+                  setFormData(INITIAL_FORM_STATE);
+                  setIsEditingId(null);
+                  setIsCloned(false);
+                  setViewMode('form');
+                }
               }}
               style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             >
@@ -298,6 +670,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
               className="btn btn-secondary"
               onClick={() => {
                 setIsEditingId(null);
+                setIsCloned(false);
                 setViewMode('history');
               }}
               style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
@@ -381,7 +754,24 @@ export default function MaterialsConsumption({ user, t, lang }) {
                               <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
                                 <button 
                                   className="btn btn-secondary" 
+                                  onClick={() => handlePrintReport(report)}
+                                  title={lang === 'ar' ? 'طباعة التقرير PDF' : 'Print report PDF'}
+                                  style={{ padding: '6px 10px', minWidth: 'auto', minHeight: 'auto', background: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.2)', color: 'var(--success)' }}
+                                >
+                                  <Printer size={14} />
+                                </button>
+                                <button 
+                                  className="btn btn-secondary" 
+                                  onClick={() => handleClone(report)}
+                                  title={lang === 'ar' ? 'نسخ كتقرير جديد' : 'Clone as new report'}
+                                  style={{ padding: '6px 10px', minWidth: 'auto', minHeight: 'auto', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6' }}
+                                >
+                                  <Copy size={14} />
+                                </button>
+                                <button 
+                                  className="btn btn-secondary" 
                                   onClick={() => handleEdit(report)}
+                                  title={lang === 'ar' ? 'تعديل التقرير الحالي' : 'Edit report'}
                                   style={{ padding: '6px 10px', minWidth: 'auto', minHeight: 'auto' }}
                                 >
                                   <Edit2 size={14} />
@@ -390,6 +780,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                                   <button 
                                     className="btn btn-secondary" 
                                     onClick={() => handleDelete(report.id)}
+                                    title={lang === 'ar' ? 'حذف' : 'Delete'}
                                     style={{ padding: '6px 10px', minWidth: 'auto', minHeight: 'auto', background: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.2)', color: 'var(--danger)' }}
                                   >
                                     <Trash2 size={14} />
@@ -584,6 +975,17 @@ export default function MaterialsConsumption({ user, t, lang }) {
               </div>
             )}
 
+            {isCloned && (
+              <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--accent)', background: 'rgba(243, 151, 22, 0.05)', padding: '0.75rem 1rem' }}>
+                <Sparkles size={16} style={{ color: 'var(--accent)' }} />
+                <span style={{ fontSize: '0.85rem', color: 'var(--fg)', fontWeight: '600' }}>
+                  {lang === 'ar' 
+                    ? 'تم ملء النموذج تلقائياً ببيانات الجرد السابق. يمكنك التعديل عليها وحفظها كجرد جديد.' 
+                    : 'The form has been pre-filled with the previous report data. You can edit and save it as a new report.'}
+                </span>
+              </div>
+            )}
+
             {submitError && (
               <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--danger)', background: 'rgba(239, 68, 68, 0.05)', padding: '0.75rem 1rem' }}>
                 <AlertCircle size={16} style={{ color: 'var(--danger)' }} />
@@ -671,7 +1073,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                       <span style={{ fontWeight: '500', flex: 1 }}>{t(item)}</span>
                       <div style={{ display: 'flex', gap: '0.5rem', width: '180px' }}>
                         <input
-                          type="number"
+                          type="text"
                           placeholder={t('materialPulled')}
                           className="form-input"
                           style={{ padding: '6px', textAlign: 'center', fontFamily: 'var(--font-english)' }}
@@ -679,7 +1081,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                           onChange={(e) => handleFieldChange('basics', item, 'pulled', e.target.value)}
                         />
                         <input
-                          type="number"
+                          type="text"
                           placeholder={t('materialRemaining')}
                           className="form-input"
                           style={{ padding: '6px', textAlign: 'center', fontFamily: 'var(--font-english)' }}
@@ -719,7 +1121,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                             </td>
                             <td>
                               <input 
-                                type="number" 
+                                type="text" 
                                 className="form-input" 
                                 style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}
                                 value={formData.marble[zone].white.skiliat}
@@ -728,7 +1130,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                             </td>
                             <td>
                               <input 
-                                type="number" 
+                                type="text" 
                                 className="form-input" 
                                 style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}
                                 value={formData.marble[zone].white.pieces_per_skilia}
@@ -737,7 +1139,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                             </td>
                             <td>
                               <input 
-                                type="number" 
+                                type="text" 
                                 className="form-input" 
                                 style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}
                                 value={formData.marble[zone].white.loose}
@@ -756,7 +1158,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                             </td>
                             <td>
                               <input 
-                                type="number" 
+                                type="text" 
                                 className="form-input" 
                                 style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}
                                 value={formData.marble[zone].brown.skiliat}
@@ -765,7 +1167,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                             </td>
                             <td>
                               <input 
-                                type="number" 
+                                type="text" 
                                 className="form-input" 
                                 style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}
                                 value={formData.marble[zone].brown.pieces_per_skilia}
@@ -774,7 +1176,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                             </td>
                             <td>
                               <input 
-                                type="number" 
+                                type="text" 
                                 className="form-input" 
                                 style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}
                                 value={formData.marble[zone].brown.loose}
@@ -821,7 +1223,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                       <span style={{ fontWeight: '500', flex: 1 }}>{t(item)}</span>
                       <div style={{ display: 'flex', gap: '0.5rem', width: '180px' }}>
                         <input
-                          type="number"
+                          type="text"
                           placeholder={t('materialPulled')}
                           className="form-input"
                           style={{ padding: '6px', textAlign: 'center', fontFamily: 'var(--font-english)' }}
@@ -829,7 +1231,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                           onChange={(e) => handleFieldChange('sealants', item, 'pulled', e.target.value)}
                         />
                         <input
-                          type="number"
+                          type="text"
                           placeholder={t('materialRemaining')}
                           className="form-input"
                           style={{ padding: '6px', textAlign: 'center', fontFamily: 'var(--font-english)' }}
@@ -856,7 +1258,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                       <div>
                         <label className="form-label" style={{ fontSize: '0.75rem' }}>{t('cementQty')}</label>
                         <input 
-                          type="number" 
+                          type="text" 
                           className="form-input" 
                           style={{ fontFamily: 'var(--font-english)' }}
                           value={formData.bulk.cement}
@@ -866,7 +1268,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                       <div>
                         <label className="form-label" style={{ fontSize: '0.75rem' }}>{t('sandQty')}</label>
                         <input 
-                          type="number" 
+                          type="text" 
                           className="form-input" 
                           style={{ fontFamily: 'var(--font-english)' }}
                           value={formData.bulk.sand}
@@ -883,7 +1285,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                       <div>
                         <label className="form-label" style={{ fontSize: '0.75rem' }}>{t('materialPulled')}</label>
                         <input 
-                          type="number" 
+                          type="text" 
                           className="form-input" 
                           style={{ fontFamily: 'var(--font-english)' }}
                           value={formData.bulk.foam.pulled}
@@ -893,7 +1295,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
                       <div>
                         <label className="form-label" style={{ fontSize: '0.75rem' }}>{t('materialRemaining')}</label>
                         <input 
-                          type="number" 
+                          type="text" 
                           className="form-input" 
                           style={{ fontFamily: 'var(--font-english)' }}
                           value={formData.bulk.foam.remaining}
@@ -931,6 +1333,33 @@ export default function MaterialsConsumption({ user, t, lang }) {
                 </span>
               )}
               
+              {!isEditingId && (
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    if (window.confirm(lang === 'ar' ? 'هل أنت متأكد من تفريغ النموذج والبدء من جديد؟' : 'Are you sure you want to clear the form and start clean?')) {
+                      setFormData(INITIAL_FORM_STATE);
+                      setIsCloned(false);
+                      localStorage.removeItem('materials_consumption_draft');
+                    }
+                  }}
+                  style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'var(--border)' }}
+                >
+                  {lang === 'ar' ? 'البدء بنموذج فارغ' : 'Start with Empty Form'}
+                </button>
+              )}
+
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => handlePrintReport(formData)}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.2)', color: 'var(--success)' }}
+              >
+                <Printer size={18} />
+                {lang === 'ar' ? 'طباعة / تصدير PDF' : 'Print / Export PDF'}
+              </button>
+
               <button 
                 type="submit" 
                 className="btn btn-primary"
@@ -945,6 +1374,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
           </motion.form>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

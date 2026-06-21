@@ -1,7 +1,7 @@
 const dictionary = {
   ar: {
     // Common
-    projectName: "منصة المتابعة الهندسية | موقع النصب التذكاري للجندي المجهول",
+    projectName: "متابعة موقع الجندي المجهول",
     home: "الرئيسية",
     loading: "جاري التحميل...",
     error: "خطأ",
@@ -22,7 +22,7 @@ const dictionary = {
     reportDate: "تاريخ التقرير",
     
     // Sidebar
-    sidebarTitle: "منصة المتابعة",
+    sidebarTitle: "متابعة موقع الجندي المجهول",
     menuDashboard: "اللوحة الرئيسية",
     menuTracking: "سجل النزلات التفصيلي",
     menuMarble: "توزيع المرمر والزونات",
@@ -36,7 +36,7 @@ const dictionary = {
     headerTrackingSubtitle: "سجل متابعة وتغيير حالة النزلات الـ 113 الموزعة على الزونات A, B, C",
     headerMarbleTitle: "تقرير توزيع قطع المرمر والزونات",
     headerMarbleSubtitle: "موقف التوزيع الميداني لقطع المرمر بالألوان الأبيض والجوزي حسب الزون",
-    headerDefaultTitle: "منصة المتابعة الهندسية",
+    headerDefaultTitle: "متابعة موقع الجندي المجهول",
     headerDefaultSubtitle: "نظام حساب وأرشفة نسب الإنجاز التلقائية",
     
     // Dashboard Cards
@@ -162,10 +162,10 @@ const dictionary = {
     putty: "معجون",
     primer: "برايمر",
     roller: "رولة",
-    beigePaint: "صبغ بيجي",
-    beige_paint: "صبغ بيجي",
-    whitePaint: "صبغ أبيض",
-    white_paint: "صبغ أبيض",
+    beigePaint: "صوصج بيجي",
+    beige_paint: "صوصج بيجي",
+    whitePaint: "صوصج أبيض",
+    white_paint: "صوصج أبيض",
     tape: "تيب لاصق",
     sponge1cm: "حبل اسفنجي 1 سم",
     sponge_1cm: "حبل اسفنجي 1 سم",
@@ -189,7 +189,7 @@ const dictionary = {
   },
   en: {
     // Common
-    projectName: "Engineering Monitoring Panel | Unknown Soldier Memorial Site",
+    projectName: "Unknown Soldier Site Monitoring",
     home: "Home",
     loading: "Loading...",
     error: "Error",
@@ -210,7 +210,7 @@ const dictionary = {
     reportDate: "Report Date",
     
     // Sidebar
-    sidebarTitle: "Monitoring Panel",
+    sidebarTitle: "Unknown Soldier Site Monitoring",
     menuDashboard: "Dashboard",
     menuTracking: "Detailed Nazalat",
     menuMarble: "Marble & Zones",
@@ -224,7 +224,7 @@ const dictionary = {
     headerTrackingSubtitle: "Monitoring & status configuration of the 113 Downspouts across Zones A, B, C",
     headerMarbleTitle: "Marble & Zones Distribution Report",
     headerMarbleSubtitle: "Field status of White and Brown Alabaster pieces distributed by Zone",
-    headerDefaultTitle: "Engineering Monitoring Platform",
+    headerDefaultTitle: "Unknown Soldier Site Monitoring",
     headerDefaultSubtitle: "Automated progress tracking and calculation system",
     
     // Dashboard Cards
@@ -350,10 +350,10 @@ const dictionary = {
     putty: "Putty",
     primer: "Primer",
     roller: "Roller",
-    beigePaint: "Beige Paint",
-    beige_paint: "Beige Paint",
-    whitePaint: "White Paint",
-    white_paint: "White Paint",
+    beigePaint: "Beige Sealant",
+    beige_paint: "Beige Sealant",
+    whitePaint: "White Sealant",
+    white_paint: "White Sealant",
     tape: "Tape",
     sponge1cm: "Sponge Cord 1cm",
     sponge_1cm: "Sponge Cord 1cm",
