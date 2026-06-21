@@ -96,26 +96,57 @@ export default function MaterialsConsumption({ user, t, lang }) {
 
     // Build marble rows
     let marbleRows = '';
+    let totalWhiteSkiliat = 0, totalBrownSkiliat = 0;
+    let totalWhiteLoose = 0, totalBrownLoose = 0;
+    let netWhite = 0, netBrown = 0;
+
     zones.forEach(zone => {
       const w = report.marble?.[zone]?.white || {};
       const b = report.marble?.[zone]?.brown || {};
+      
+      const wSkiliat = parseInt(w.skiliat) || 0;
+      const wLoose = parseInt(w.loose) || 0;
+      const wTotal = parseInt(w.total) || 0;
+
+      const bSkiliat = parseInt(b.skiliat) || 0;
+      const bLoose = parseInt(b.loose) || 0;
+      const bTotal = parseInt(b.total) || 0;
+
+      totalWhiteSkiliat += wSkiliat;
+      totalWhiteLoose += wLoose;
+      netWhite += wTotal;
+
+      totalBrownSkiliat += bSkiliat;
+      totalBrownLoose += bLoose;
+      netBrown += bTotal;
+
       marbleRows += `
         <tr>
           <td rowspan="2" style="vertical-align:middle;font-weight:700;background:#f8f9fa;">${zoneNames[zone]}</td>
           <td>مرمر أبيض</td>
-          <td style="text-align:center">${w.skiliat || 0}</td>
+          <td style="text-align:center">${wSkiliat}</td>
           <td style="text-align:center">${w.pieces_per_skilia || 198}</td>
-          <td style="text-align:center">${w.loose || 0}</td>
-          <td style="text-align:center;font-weight:700;">${(w.total || 0).toLocaleString()}</td>
+          <td style="text-align:center">${wLoose}</td>
+          <td style="text-align:center;font-weight:700;">${wTotal.toLocaleString()}</td>
         </tr>
         <tr>
           <td style="color:#b45309;">مرمر جوزي</td>
-          <td style="text-align:center">${b.skiliat || 0}</td>
+          <td style="text-align:center">${bSkiliat}</td>
           <td style="text-align:center">${b.pieces_per_skilia || 198}</td>
-          <td style="text-align:center">${b.loose || 0}</td>
-          <td style="text-align:center;font-weight:700;color:#b45309;">${(b.total || 0).toLocaleString()}</td>
+          <td style="text-align:center">${bLoose}</td>
+          <td style="text-align:center;font-weight:700;color:#b45309;">${bTotal.toLocaleString()}</td>
         </tr>`;
     });
+
+    marbleRows += `
+      <tr style="background:#1a1a2e;color:#fff;font-weight:800;border-top:2px solid #1a1a2e;">
+        <td colspan="2" style="text-align:left;padding-right:15px;">الإجمالي التراكمي / المجموع الكلي:</td>
+        <td style="text-align:center;direction:ltr;">W: ${totalWhiteSkiliat}<br/><span style="color:#f59e0b;">B: ${totalBrownSkiliat}</span></td>
+        <td style="text-align:center;color:#888;">-</td>
+        <td style="text-align:center;direction:ltr;">W: ${totalWhiteLoose}<br/><span style="color:#f59e0b;">B: ${totalBrownLoose}</span></td>
+        <td style="text-align:center;direction:ltr;">W: ${netWhite.toLocaleString()}<br/><span style="color:#f59e0b;">B: ${netBrown.toLocaleString()}</span></td>
+      </tr>
+    `;
 
     // Build basics rows
     let basicsRows = '';
@@ -744,11 +775,19 @@ export default function MaterialsConsumption({ user, t, lang }) {
                             </td>
                             <td style={{ fontWeight: '500' }}>{report.prepared_by}</td>
                             <td>
-                              <span style={{ fontSize: '0.85rem' }}>
+                              <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
+                                {lang === 'ar' ? `المجموع: ${rWhite + rBrown}` : `Total: ${rWhite + rBrown}`}
+                              </div>
+                              <div style={{ fontSize: '0.8rem', color: '#ccc', marginTop: '4px' }}>
                                 {lang === 'ar' 
-                                  ? `مرمر: ${rWhite + rBrown} (أبيض ${rWhite} | جوزي ${rBrown})` 
-                                  : `Marble: ${rWhite + rBrown} (W: ${rWhite} | B: ${rBrown})`}
-                              </span>
+                                  ? `أبيض: ${rWhite} (سيكبة ${Math.floor(rWhite / 198)} | مفرط ${rWhite % 198})`
+                                  : `White: ${rWhite} (Pallets ${Math.floor(rWhite / 198)} | Loose ${rWhite % 198})`}
+                              </div>
+                              <div style={{ fontSize: '0.8rem', color: 'var(--accent)', marginTop: '2px' }}>
+                                {lang === 'ar' 
+                                  ? `جوزي: ${rBrown} (سيكبة ${Math.floor(rBrown / 198)} | مفرط ${rBrown % 198})`
+                                  : `Brown: ${rBrown} (Pallets ${Math.floor(rBrown / 198)} | Loose ${rBrown % 198})`}
+                              </div>
                             </td>
                             <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                               <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
