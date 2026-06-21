@@ -298,7 +298,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
             <Building2 size={18} style={{ color: 'var(--accent)' }} />
             {t('chartMarbleTitle')}
           </h3>
-          <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>
             <div style={{ width: '200px', height: '200px', minWidth: 0 }}>
               <PieChart width={200} height={200}>
                 <Pie

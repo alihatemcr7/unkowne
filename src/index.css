@@ -1325,9 +1325,29 @@ html[dir="ltr"] .user-profile {
     min-width: 0 !important;
   }
 
-  /* ─── Login Card ─── */
+  /* ─── Main Content & Container Spacing ─── */
+  .main-content {
+    padding: var(--space-3) !important;
+    gap: var(--space-4) !important;
+  }
+
   .login-container {
     padding: var(--space-3) !important;
+  }
+
+  .glass-panel, .kpi-card {
+    padding: 1.25rem !important;
+  }
+
+  /* ─── Touch Targets & Micro-interactions ─── */
+  .btn, .switch-btn, .export-btn, select, .form-input, .input-number, .nazala-toggle-btn {
+    min-height: 44px !important;
+    min-width: 44px;
+  }
+  
+  .btn:active, .switch-btn:active, .glass-panel:active {
+    transform: scale(0.97) !important;
+    transition: transform 0.1s ease !important;
   }
 
   .login-card {
@@ -1355,6 +1375,27 @@ html[dir="ltr"] .user-profile {
     max-width: 100% !important;
     overflow-x: auto !important;
     display: block !important;
+    background: 
+      linear-gradient(to right, var(--surface) 30%, rgba(255, 255, 255, 0)),
+      linear-gradient(to left, var(--surface) 30%, rgba(255, 255, 255, 0)) 100% 0,
+      radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0)),
+      radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0)) 100% 0;
+    background-repeat: no-repeat;
+    background-color: var(--surface);
+    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+    background-attachment: local, local, scroll, scroll;
+  }
+
+  [data-theme="dark"] .table-responsive {
+    background: 
+      linear-gradient(to right, var(--surface-solid) 30%, rgba(0,0,0,0)),
+      linear-gradient(to left, var(--surface-solid) 30%, rgba(0,0,0,0)) 100% 0,
+      radial-gradient(farthest-side at 0 50%, rgba(255,255,255,0.1), rgba(0,0,0,0)),
+      radial-gradient(farthest-side at 100% 50%, rgba(255,255,255,0.1), rgba(0,0,0,0)) 100% 0;
+    background-color: var(--surface-solid);
+    background-repeat: no-repeat;
+    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+    background-attachment: local, local, scroll, scroll;
   }
 
   .project-table {
