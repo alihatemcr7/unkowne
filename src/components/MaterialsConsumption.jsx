@@ -139,12 +139,12 @@ export default function MaterialsConsumption({ user, t, lang }) {
     });
 
     marbleRows += `
-      <tr style="background:#1a1a2e;color:#fff;font-weight:800;border-top:2px solid #1a1a2e;">
-        <td colspan="2" style="text-align:left;padding-right:15px;">الإجمالي التراكمي / المجموع الكلي:</td>
-        <td style="text-align:center;direction:ltr;">W: ${totalWhiteSkiliat}<br/><span style="color:#f59e0b;">B: ${totalBrownSkiliat}</span></td>
+      <tr style="background:#1a1a2e;font-weight:800;border-top:2px solid #1a1a2e;">
+        <td colspan="2" style="text-align:left;padding-right:15px;color:#fff;">الإجمالي التراكمي / المجموع الكلي:</td>
+        <td style="text-align:center;direction:ltr;color:#fff;">W: ${totalWhiteSkiliat}<br/><span style="color:#f59e0b;">B: ${totalBrownSkiliat}</span></td>
         <td style="text-align:center;color:#888;">-</td>
-        <td style="text-align:center;direction:ltr;">W: ${totalWhiteLoose}<br/><span style="color:#f59e0b;">B: ${totalBrownLoose}</span></td>
-        <td style="text-align:center;direction:ltr;">W: ${netWhite.toLocaleString()}<br/><span style="color:#f59e0b;">B: ${netBrown.toLocaleString()}</span></td>
+        <td style="text-align:center;direction:ltr;color:#fff;">W: ${totalWhiteLoose}<br/><span style="color:#f59e0b;">B: ${totalBrownLoose}</span></td>
+        <td style="text-align:center;direction:ltr;color:#fff;">W: ${netWhite.toLocaleString()}<br/><span style="color:#f59e0b;">B: ${netBrown.toLocaleString()}</span></td>
       </tr>
     `;
 
