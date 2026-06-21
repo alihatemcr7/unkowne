@@ -88,8 +88,95 @@ export default function MaterialsConsumption({ user, t, lang }) {
     fetchReports();
   }, []);
 
+  // ── Helper: Calculate differences between two reports ──
+  const getDifferencesList = (report, prevReport) => {
+    let list = [];
+    if (!prevReport) return list;
+    
+    // Basics
+    const basicsLabels = {
+      varnish: 'وارنيش', granite_granules: 'حبيبات كرانيت',
+      brown_paint: 'صبغ لون جوزي', gray_base: 'أساس رصاصي',
+      putty: 'معجون', primer: 'برايمر', roller: 'رولة'
+    };
+    Object.keys(report.basics || {}).forEach(k => {
+      const oldRem = prevReport.basics?.[k]?.remaining || '0';
+      const newRem = report.basics?.[k]?.remaining || '0';
+      if (oldRem !== newRem && (oldRem !== '0' || newRem !== '0')) {
+        list.push(`<li><strong>${basicsLabels[k] || k}:</strong> السابق (${oldRem}) &larr; المحدث (${newRem})</li>`);
+      }
+    });
+
+    // Sealants
+    const sealantsLabels = {
+      beige_paint: 'صوصج بيجي', white_paint: 'صوصج أبيض',
+      primer: 'برايمر', tape: 'تيب لاصق',
+      sponge_1cm: 'حبل اسفنجي 1 سم', sponge_2cm: 'حبل اسفنجي 2 سم', sponge_3cm: 'حبل اسفنجي 3 سم'
+    };
+    Object.keys(report.sealants || {}).forEach(k => {
+      const oldRem = prevReport.sealants?.[k]?.remaining || '0';
+      const newRem = report.sealants?.[k]?.remaining || '0';
+      if (oldRem !== newRem && (oldRem !== '0' || newRem !== '0')) {
+        list.push(`<li><strong>${sealantsLabels[k] || k}:</strong> السابق (${oldRem}) &larr; المحدث (${newRem})</li>`);
+      }
+    });
+
+    // Bulk
+    const oldCement = prevReport.bulk?.cement || '0';
+    const newCement = report.bulk?.cement || '0';
+    if (oldCement !== newCement && (oldCement !== '0' || newCement !== '0')) {
+      list.push(`<li><strong>كمية الأسمنت:</strong> السابق (${oldCement}) &larr; المحدث (${newCement})</li>`);
+    }
+
+    const oldSand = prevReport.bulk?.sand || '0';
+    const newSand = report.bulk?.sand || '0';
+    if (oldSand !== newSand && (oldSand !== '0' || newSand !== '0')) {
+      list.push(`<li><strong>كمية الرمل:</strong> السابق (${oldSand}) &larr; المحدث (${newSand})</li>`);
+    }
+
+    const oldFoam = prevReport.bulk?.foam?.remaining || '0';
+    const newFoam = report.bulk?.foam?.remaining || '0';
+    if (oldFoam !== newFoam && (oldFoam !== '0' || newFoam !== '0')) {
+      list.push(`<li><strong>الفوم:</strong> السابق (${oldFoam}) &larr; المحدث (${newFoam})</li>`);
+    }
+
+    // Marble
+    const zones = ['zone_a', 'zone_b', 'zone_c'];
+    const zoneNames = { zone_a: 'زون A', zone_b: 'زون B', zone_c: 'زون C' };
+    zones.forEach(zone => {
+      ['white', 'brown'].forEach(c => {
+        const oldTotal = prevReport.marble?.[zone]?.[c]?.total || 0;
+        const newTotal = report.marble?.[zone]?.[c]?.total || 0;
+        if (oldTotal !== newTotal) {
+          const colorName = c === 'white' ? 'أبيض' : 'جوزي';
+          list.push(`<li><strong>مرمر ${colorName} (${zoneNames[zone]}):</strong> السابق (${oldTotal}) &larr; المحدث (${newTotal})</li>`);
+        }
+      });
+    });
+
+    return list;
+  };
+
   // ── Generate and print a beautiful PDF report in a new window ──
   const handlePrintReport = (report) => {
+    // Determine previous report for changes section
+    const reportIndex = reports.findIndex(r => r.id === report.id);
+    const prevReport = reports[reportIndex + 1];
+    const diffList = getDifferencesList(report, prevReport);
+    let changesHTML = '';
+    if (diffList.length > 0) {
+      changesHTML = `
+        <div class="section" style="margin-top: 20px;">
+          <div class="section-title" style="background:#f59e0b;color:#1a1a2e;"><span class="num" style="background:#1a1a2e;color:#f59e0b;">6</span> التحديثات والاستهلاك الفعلي (مقارنة بالتقرير السابق)</div>
+          <div style="border: 1.5px solid #f59e0b; border-top: none; padding: 12px 20px; border-radius: 0 0 6px 6px; background:#fffbeb;">
+             <ul style="margin:0; padding-right: 20px; font-size: 10.5pt; color: #444; line-height: 1.8;">
+               ${diffList.join('')}
+             </ul>
+          </div>
+        </div>
+      `;
+    }
+
     const dayLabel = getDayTranslation(report.day || '');
     const zones = ['zone_a', 'zone_b', 'zone_c'];
     const zoneNames = { zone_a: 'زون A', zone_b: 'زون B', zone_c: 'زون C' };
@@ -432,6 +519,9 @@ export default function MaterialsConsumption({ user, t, lang }) {
 
     <!-- NOTES -->
     ${report.notes ? `<div class="section"><div class="section-title"><span class="num">5</span> ملاحظات</div>${notesBlock}</div>` : ''}
+
+    <!-- CHANGES/UPDATES -->
+    ${changesHTML}
 
     <!-- SIGNATURES -->
     <div class="signatures">
