@@ -67,6 +67,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
   const [showAutoSaveIndicator, setShowAutoSaveIndicator] = useState(false);
   const [hasRestoredDraft, setHasRestoredDraft] = useState(false);
   const [expandedReportId, setExpandedReportId] = useState(null);
+  const [originalDataForEdit, setOriginalDataForEdit] = useState(null);
 
   // 1. Fetch submitted reports on mount
   const fetchReports = async () => {
@@ -159,24 +160,6 @@ export default function MaterialsConsumption({ user, t, lang }) {
 
   // ── Generate and print a beautiful PDF report in a new window ──
   const handlePrintReport = (report) => {
-    // Determine previous report for changes section
-    const reportIndex = reports.findIndex(r => r.id === report.id);
-    const prevReport = reports[reportIndex + 1];
-    const diffList = getDifferencesList(report, prevReport);
-    let changesHTML = '';
-    if (diffList.length > 0) {
-      changesHTML = `
-        <div class="section" style="margin-top: 20px;">
-          <div class="section-title" style="background:#f59e0b;color:#1a1a2e;"><span class="num" style="background:#1a1a2e;color:#f59e0b;">6</span> التحديثات والاستهلاك الفعلي (مقارنة بالتقرير السابق)</div>
-          <div style="border: 1.5px solid #f59e0b; border-top: none; padding: 12px 20px; border-radius: 0 0 6px 6px; background:#fffbeb;">
-             <ul style="margin:0; padding-right: 20px; font-size: 10.5pt; color: #444; line-height: 1.8;">
-               ${diffList.join('')}
-             </ul>
-          </div>
-        </div>
-      `;
-    }
-
     const dayLabel = getDayTranslation(report.day || '');
     const zones = ['zone_a', 'zone_b', 'zone_c'];
     const zoneNames = { zone_a: 'زون A', zone_b: 'زون B', zone_c: 'زون C' };
@@ -518,10 +501,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
     </div>
 
     <!-- NOTES -->
-    ${report.notes ? `<div class="section"><div class="section-title"><span class="num">5</span> ملاحظات</div>${notesBlock}</div>` : ''}
-
-    <!-- CHANGES/UPDATES -->
-    ${changesHTML}
+    ${report.notes ? `<div class="section"><div class="section-title"><span class="num">5</span> ملاحظات وتحديثات الاستهلاك</div>${notesBlock}</div>` : ''}
 
     <!-- SIGNATURES -->
     <div class="signatures">
@@ -640,6 +620,25 @@ export default function MaterialsConsumption({ user, t, lang }) {
     setLoading(true);
     setSubmitError('');
 
+    const submitData = JSON.parse(JSON.stringify(formData));
+
+    if (originalDataForEdit) {
+      const diffList = getDifferencesList(submitData, originalDataForEdit);
+      if (diffList.length > 0) {
+        const plainTextDiffs = diffList.map(item => {
+           let text = item.replace(/<li>/g, '- ').replace(/<\/li>/g, '');
+           text = text.replace(/<strong>(.*?)<\/strong>/g, '$1');
+           text = text.replace(/&larr;/g, '->');
+           text = text.replace(/<[^>]+>/g, '');
+           return text.trim();
+        }).join('\n');
+        
+        const timestamp = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        submitData.notes = (submitData.notes ? submitData.notes + '\n\n' : '') + 
+                           `--- تحديثات الاستهلاك / التعديلات (${submitData.date}) ---\n` + plainTextDiffs;
+      }
+    }
+
     try {
       const method = isEditingId ? 'PUT' : 'POST';
       const url = isEditingId 
@@ -649,7 +648,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       });
 
       if (res.ok) {
@@ -658,6 +657,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
           localStorage.removeItem('materials_consumption_draft');
         }
         setFormData(INITIAL_FORM_STATE);
+        setOriginalDataForEdit(null);
         setIsEditingId(null);
         setIsCloned(false);
         setViewMode('history');
@@ -692,6 +692,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
   // 7. Edit Setup
   const handleEdit = (report) => {
     setFormData(report);
+    setOriginalDataForEdit(JSON.parse(JSON.stringify(report)));
     setIsEditingId(report.id);
     setIsCloned(false);
     setViewMode('form');
@@ -710,6 +711,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
       day: todayDayArabic,
       created_at: undefined
     });
+    setOriginalDataForEdit(JSON.parse(JSON.stringify(report)));
     setIsEditingId(null);
     setIsCloned(true);
     setViewMode('form');
@@ -1003,8 +1005,8 @@ export default function MaterialsConsumption({ user, t, lang }) {
                                       </div>
                                       {report.notes && (
                                         <div style={{ marginTop: '0.5rem', padding: '0.6rem 0.8rem', borderRadius: '6px', background: 'rgba(255,255,255,0.02)', borderLeft: lang === 'ar' ? 'none' : '3px solid var(--accent)', borderRight: lang === 'ar' ? '3px solid var(--accent)' : 'none' }}>
-                                          <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '2px', fontWeight: '600' }}>{t('notes')}:</div>
-                                          <div style={{ fontSize: '0.85rem', fontStyle: 'italic', color: 'var(--fg-2)' }}>{report.notes}</div>
+                                          <div style={{ fontSize: '0.85rem', color: 'var(--accent)', marginBottom: '4px', fontWeight: '800' }}>{t('notes')} وتحديثات الاستهلاك:</div>
+                                          <div style={{ fontSize: '0.85rem', fontStyle: 'italic', color: 'var(--fg-2)', whiteSpace: 'pre-line' }}>{report.notes}</div>
                                         </div>
                                       )}
                                     </div>
