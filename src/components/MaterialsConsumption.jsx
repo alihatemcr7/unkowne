@@ -466,7 +466,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
 
   // 2. Load draft from localStorage on switching to Form Mode
   useEffect(() => {
-    if (viewMode === 'form' && !isEditingId) {
+    if (viewMode === 'form' && !isEditingId && !isCloned) {
       const savedDraft = localStorage.getItem('materials_consumption_draft');
       if (savedDraft) {
         try {
@@ -483,7 +483,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
         }
       }
     }
-  }, [viewMode, isEditingId]);
+  }, [viewMode, isEditingId, isCloned]);
 
   // 3. Auto-save form changes to localStorage
   useEffect(() => {
