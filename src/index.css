@@ -185,9 +185,11 @@ html[dir="ltr"] textarea {
 /* Glassmorphism Panel - The Core UI Element */
 .glass-panel {
   background: var(--surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
   border: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
   box-shadow: var(--elev-glass);
@@ -206,9 +208,10 @@ html[dir="ltr"] textarea {
 .sidebar {
   width: 280px;
   background: var(--surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
   border-left: 1px solid var(--border);
+  border-right: 1px solid rgba(255, 255, 255, 0.15); /* Reflective edge */
   position: fixed;
   top: 0;
   right: 0;
@@ -251,6 +254,8 @@ html[dir="ltr"] textarea {
   font-size: 0.82rem;
   font-weight: 800;
   color: var(--fg);
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -258,6 +263,10 @@ html[dir="ltr"] textarea {
   flex: 1;
   opacity: 1;
   transition: opacity var(--motion-fast);
+}
+
+[data-theme="dark"] .sidebar-title {
+  text-shadow: 0 0 10px rgba(255,255,255,0.2); /* Etched Glow */
 }
 
 .sidebar.collapsed .sidebar-title {
@@ -276,17 +285,27 @@ html[dir="ltr"] textarea {
 .nav-item {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
+  padding: 12px var(--space-4);
   color: var(--fg-2);
   text-decoration: none;
+  font-weight: 600;
   border-radius: var(--radius-sm);
   transition: var(--transition-smooth);
-  cursor: pointer;
+  margin: 4px var(--space-4);
+  font-size: var(--text-sm);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
   border: 1px solid transparent;
-  font-weight: 600;
   position: relative;
   overflow: hidden;
+}
+
+[data-theme="dark"] .nav-item {
+  text-shadow: 0 0 8px rgba(255,255,255,0.15); /* Etched Glow */
+}
+
+.nav-item svg {
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
 .nav-item::before {
@@ -554,11 +573,13 @@ html[dir="ltr"] .main-content.collapsed {
   justify-content: space-between;
   padding: 1.75rem;
   background: var(--surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
   border-radius: var(--radius-lg);
   box-shadow: var(--elev-glass);
   border: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   overflow: hidden;
   transition: var(--transition-smooth);
@@ -611,6 +632,15 @@ html[dir="ltr"] .main-content.collapsed {
   font-weight: 800;
   color: var(--fg);
   font-family: var(--font-english);
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.5); /* Glowing Text Effect */
+}
+
+.kpi-card.success .kpi-value {
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.6); /* Cyan/Emerald Glow */
+}
+
+.kpi-card.pending .kpi-value {
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.6); /* Amber Glow */
 }
 
 .kpi-subtext {
@@ -690,11 +720,22 @@ html[dir="ltr"] .main-content.collapsed {
 }
 
 [data-theme="dark"] .project-table th {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 [data-theme="dark"] .project-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Glass Zebra Striping */
+.project-table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px) saturate(180%);
+}
+
+[data-theme="dark"] .project-table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(30px) saturate(180%);
 }
 
 .category-header-row {
@@ -719,7 +760,9 @@ html[dir="ltr"] .main-content.collapsed {
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-pill);
   border: 1px solid var(--border);
-  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px) saturate(150%);
   box-shadow: var(--elev-glass);
 }
 
