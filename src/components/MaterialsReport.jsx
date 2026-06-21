@@ -79,6 +79,11 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
           <span className="kpi-value" style={{ fontSize: '1.75rem', color: '#eef2f7' }}>
             {totalWhite.toLocaleString()}
           </span>
+          <div style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px', fontWeight: 'bold' }}>
+            {lang === 'ar' 
+              ? `سيكبة: ${Math.floor(totalWhite / 198).toLocaleString()} (السيكبة 198 قطعة) | مفرط: ${totalWhite % 198}` 
+              : `Pallets: ${Math.floor(totalWhite / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalWhite % 198}`}
+          </div>
           <span className="kpi-subtext" style={{ marginTop: '8px' }}>
             {lang === 'ar' ? 'إجمالي القطع البيضاء المطبقة ميدانياً' : 'Total white pieces applied in the field'}
           </span>
@@ -90,6 +95,11 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
           <span className="kpi-value" style={{ fontSize: '1.75rem', color: 'var(--accent)' }}>
             {totalBrown.toLocaleString()}
           </span>
+          <div style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px', fontWeight: 'bold' }}>
+            {lang === 'ar' 
+              ? `سيكبة: ${Math.floor(totalBrown / 198).toLocaleString()} (السيكبة 198 قطعة) | مفرط: ${totalBrown % 198}` 
+              : `Pallets: ${Math.floor(totalBrown / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalBrown % 198}`}
+          </div>
           <span className="kpi-subtext" style={{ marginTop: '8px' }}>
             {lang === 'ar' ? 'إجمالي القطع الجوزية المطبقة ميدانياً' : 'Total brown pieces applied in the field'}
           </span>
@@ -101,6 +111,11 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
           <span className="kpi-value" style={{ fontSize: '1.75rem', color: 'var(--success)' }}>
             {grandTotal.toLocaleString()}
           </span>
+          <div style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px', fontWeight: 'bold' }}>
+            {lang === 'ar' 
+              ? `سيكبة: ${Math.floor(grandTotal / 198).toLocaleString()} (السيكبة 198 قطعة) | مفرط: ${grandTotal % 198}` 
+              : `Pallets: ${Math.floor(grandTotal / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${grandTotal % 198}`}
+          </div>
           <span className="kpi-subtext" style={{ marginTop: '8px' }}>
             {lang === 'ar' ? 'المجموع الكلي لقطع المرمر المطبقة' : 'Grand total of applied marble pieces'}
           </span>
