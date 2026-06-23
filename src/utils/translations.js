@@ -123,7 +123,6 @@ const dictionary = {
     connError: "تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى.",
     
     // Materials Consumption
-    menuMaterialsConsumption: "استهلاك المواد اليومي",
     headerMaterialsConsumptionTitle: "متابعة استهلاك المواد اليومي",
     headerMaterialsConsumptionSubtitle: "نموذج إدخال وجرد استهلاك المواد الأساسية والمرمر والمواد العازلة والسائبة يومياً",
     materialsReportDate: "التاريخ",
@@ -311,7 +310,6 @@ const dictionary = {
     connError: "Server connection failed. Please try again.",
     
     // Materials Consumption
-    menuMaterialsConsumption: "Daily Materials",
     headerMaterialsConsumptionTitle: "Daily Materials Consumption Tracking",
     headerMaterialsConsumptionSubtitle: "Entry form and inventory log for daily consumption of basic materials, marble, sealants, and bulk materials",
     materialsReportDate: "Date",
@@ -416,8 +414,10 @@ const dataTranslations = {
     
     // Notes & Field Status
     "مطابق لجرودات الموقع": "مطابق لجرودات الموقع",
+    "مطابق لملف الجرد الكلي الأخير": "مطابق لملف الجرد الكلي الأخير",
     "قيد التجهيز والعمل": "قيد التجهيز والعمل",
     "مكتمل بالكامل مع استبدال كافة القطع": "مكتمل بالكامل مع استبدال كافة القطع",
+    "مكتمل بالكامل": "مكتمل بالكامل",
     "منجزة ومكتملة بالكامل لكافة الزونات": "منجزة ومكتملة بالكامل لكافة الزونات",
     "زون A واصل 96% (باقي مثلثات الجوينات الطولية فقط)، زون C إلى نهاية عمل ديار نزلة رقم 19": "زون A واصل 96% (باقي مثلثات الجوينات الطولية فقط)، زون C إلى نهاية عمل ديار نزلة رقم 19",
     "الطول المنجز 2204 م": "الطول المنجز 2204 م",
@@ -478,8 +478,10 @@ const dataTranslations = {
     
     // Notes & Field Status
     "مطابق لجرودات الموقع": "Matching site inventory",
+    "مطابق لملف الجرد الكلي الأخير": "Matching the final total inventory file",
     "قيد التجهيز والعمل": "Under preparation and work",
     "مكتمل بالكامل مع استبدال كافة القطع": "Fully completed with all pieces replaced",
+    "مكتمل بالكامل": "Fully completed",
     "منجزة ومكتملة بالكامل لكافة الزونات": "Fully done and completed for all zones",
     "زون A واصل 96% (باقي مثلثات الجوينات الطولية فقط)، زون C إلى نهاية عمل ديار نزلة رقم 19": "Zone A at 96% (only vertical joint triangles left), Zone C to end of downspout #19",
     "الطول المنجز 2204 م": "Completed length 2204 m",

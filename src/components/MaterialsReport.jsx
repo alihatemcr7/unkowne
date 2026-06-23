@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, CheckCircle2, AlertCircle, Edit, Save } from 'lucide-react';
+import { Layers, CheckCircle2, AlertCircle, Save } from 'lucide-react';
 
-export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleStatus, t, lang, translateText }) {
+export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t, lang, translateText }) {
   const [editingId, setEditingId] = useState(null);
   const [tempStatus, setTempStatus] = useState('');
   const [savingId, setSavingId] = useState(null);
@@ -74,51 +74,66 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
       <div className="marble-summary-cards">
         
         {/* White Alabaster */}
-        <motion.div variants={itemVariants} className="glass-panel marble-summary-card" style={{ borderLeft: lang === 'ar' ? '3px solid #eef2f7' : 'none', borderRight: lang === 'en' ? '3px solid #eef2f7' : 'none' }}>
-          <span className="kpi-title">{t('marbleWhiteTitle')}</span>
-          <span className="kpi-value" style={{ fontSize: '1.75rem', color: '#eef2f7' }}>
-            {totalWhite.toLocaleString()}
-          </span>
-          <div style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px', fontWeight: 'bold' }}>
-            {lang === 'ar' 
-              ? `سيكبة: ${Math.floor(totalWhite / 198).toLocaleString()} (السيكبة 198 قطعة) | مفرط: ${totalWhite % 198}` 
-              : `Pallets: ${Math.floor(totalWhite / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalWhite % 198}`}
+        <motion.div variants={itemVariants} className="kpi-card bento-col-4 success">
+          <div className="kpi-details">
+            <span className="kpi-title">{t('marbleWhiteTitle')}</span>
+            <span className="kpi-value tabular-nums glow-cyan" style={{ fontSize: '1.85rem' }}>
+              {totalWhite.toLocaleString()}
+            </span>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>
+              {lang === 'ar' 
+                ? `سكيبة: ${Math.floor(totalWhite / 198).toLocaleString()} (السكيبة 198 قطعة) | فرط: ${totalWhite % 198}` 
+                : `Pallets: ${Math.floor(totalWhite / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalWhite % 198}`}
+            </div>
+            <span className="kpi-subtext" style={{ marginTop: '8px' }}>
+              {lang === 'ar' ? 'إجمالي القطع البيضاء المطبقة ميدانياً' : 'Total white pieces applied in the field'}
+            </span>
           </div>
-          <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-            {lang === 'ar' ? 'إجمالي القطع البيضاء المطبقة ميدانياً' : 'Total white pieces applied in the field'}
-          </span>
+          <div className="kpi-icon-container" style={{ color: '#ffffff' }}>
+            <Layers size={22} />
+          </div>
         </motion.div>
 
         {/* Brown Alabaster */}
-        <motion.div variants={itemVariants} className="glass-panel marble-summary-card" style={{ borderLeft: lang === 'ar' ? '3px solid var(--accent)' : 'none', borderRight: lang === 'en' ? '3px solid var(--accent)' : 'none' }}>
-          <span className="kpi-title">{t('marbleBrownTitle')}</span>
-          <span className="kpi-value" style={{ fontSize: '1.75rem', color: 'var(--accent)' }}>
-            {totalBrown.toLocaleString()}
-          </span>
-          <div style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px', fontWeight: 'bold' }}>
-            {lang === 'ar' 
-              ? `سيكبة: ${Math.floor(totalBrown / 198).toLocaleString()} (السيكبة 198 قطعة) | مفرط: ${totalBrown % 198}` 
-              : `Pallets: ${Math.floor(totalBrown / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalBrown % 198}`}
+        <motion.div variants={itemVariants} className="kpi-card bento-col-4 pending">
+          <div className="kpi-details">
+            <span className="kpi-title">{t('marbleBrownTitle')}</span>
+            <span className="kpi-value tabular-nums glow-amber" style={{ fontSize: '1.85rem' }}>
+              {totalBrown.toLocaleString()}
+            </span>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>
+              {lang === 'ar' 
+                ? `سكيبة: ${Math.floor(totalBrown / 198).toLocaleString()} (السكيبة 198 قطعة) | فرط: ${totalBrown % 198}` 
+                : `Pallets: ${Math.floor(totalBrown / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalBrown % 198}`}
+            </div>
+            <span className="kpi-subtext" style={{ marginTop: '8px' }}>
+              {lang === 'ar' ? 'إجمالي القطع الجوزية المطبقة ميدانياً' : 'Total brown pieces applied in the field'}
+            </span>
           </div>
-          <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-            {lang === 'ar' ? 'إجمالي القطع الجوزية المطبقة ميدانياً' : 'Total brown pieces applied in the field'}
-          </span>
+          <div className="kpi-icon-container" style={{ color: 'var(--accent)' }}>
+            <Layers size={22} />
+          </div>
         </motion.div>
 
         {/* Combined Grand Total */}
-        <motion.div variants={itemVariants} className="glass-panel marble-summary-card" style={{ borderLeft: lang === 'ar' ? '3px solid var(--success)' : 'none', borderRight: lang === 'en' ? '3px solid var(--success)' : 'none' }}>
-          <span className="kpi-title">{t('marbleTotalTitle')}</span>
-          <span className="kpi-value" style={{ fontSize: '1.75rem', color: 'var(--success)' }}>
-            {grandTotal.toLocaleString()}
-          </span>
-          <div style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px', fontWeight: 'bold' }}>
-            {lang === 'ar' 
-              ? `سيكبة: ${Math.floor(grandTotal / 198).toLocaleString()} (السيكبة 198 قطعة) | مفرط: ${grandTotal % 198}` 
-              : `Pallets: ${Math.floor(grandTotal / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${grandTotal % 198}`}
+        <motion.div variants={itemVariants} className="kpi-card bento-col-4 success">
+          <div className="kpi-details">
+            <span className="kpi-title">{t('marbleTotalTitle')}</span>
+            <span className="kpi-value tabular-nums glow-emerald" style={{ fontSize: '1.85rem' }}>
+              {grandTotal.toLocaleString()}
+            </span>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>
+              {lang === 'ar' 
+                ? `سكيبة: ${Math.floor(grandTotal / 198).toLocaleString()} (السكيبة 198 قطعة) | فرط: ${grandTotal % 198}` 
+                : `Pallets: ${Math.floor(grandTotal / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${grandTotal % 198}`}
+            </div>
+            <span className="kpi-subtext" style={{ marginTop: '8px' }}>
+              {lang === 'ar' ? 'المجموع الكلي لقطع المرمر المطبقة' : 'Grand total of applied marble pieces'}
+            </span>
           </div>
-          <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-            {lang === 'ar' ? 'المجموع الكلي لقطع المرمر المطبقة' : 'Grand total of applied marble pieces'}
-          </span>
+          <div className="kpi-icon-container" style={{ color: 'var(--success)' }}>
+            <Layers size={22} />
+          </div>
         </motion.div>
 
       </div>
@@ -167,13 +182,13 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
                         <td colSpan="2" style={{ fontWeight: '800', ...textDirectionStyle }}>
                           {lang === 'ar' ? zoneName.replace('Zone', 'المنطقة') : zoneName}
                         </td>
-                        <td style={{ textAlign: 'center', fontWeight: '800', fontFamily: 'var(--font-english)' }}>
+                        <td className="tabular-nums" style={{ textAlign: 'center', fontWeight: '800' }}>
                           {zoneWhite > 0 ? zoneWhite.toLocaleString() : '-'}
                         </td>
-                        <td style={{ textAlign: 'center', fontWeight: '800', fontFamily: 'var(--font-english)' }}>
+                        <td className="tabular-nums" style={{ textAlign: 'center', fontWeight: '800' }}>
                           {zoneBrown > 0 ? zoneBrown.toLocaleString() : '-'}
                         </td>
-                        <td style={{ textAlign: 'center', fontWeight: '800', fontFamily: 'var(--font-english)' }}>
+                        <td className="tabular-nums" style={{ textAlign: 'center', fontWeight: '800' }}>
                           {(zoneWhite + zoneBrown) > 0 ? (zoneWhite + zoneBrown).toLocaleString() : '-'}
                         </td>
                         <td></td>
@@ -200,7 +215,7 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
                             <td style={{ fontWeight: '500', ...textDirectionStyle }}>
                               {translateText(item.task_name, lang)}
                             </td>
-                            <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}>
+                            <td className="tabular-nums" style={{ textAlign: 'center' }}>
                               {isEditing ? (
                                 <input
                                   type="number"
@@ -209,13 +224,13 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
                                   onChange={(e) => setTempWhite(e.target.value)}
                                   disabled={savingId === item.id}
                                   onClick={(e) => e.stopPropagation()}
-                                  style={{ width: '70px', padding: '0.2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--fg)', fontFamily: 'var(--font-english)' }}
+                                  style={{ width: '70px', padding: '0.2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--fg)' }}
                                 />
                               ) : (
                                 whiteDisplay
                               )}
                             </td>
-                            <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}>
+                            <td className="tabular-nums" style={{ textAlign: 'center' }}>
                               {isEditing ? (
                                 <input
                                   type="number"
@@ -224,13 +239,13 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
                                   onChange={(e) => setTempBrown(e.target.value)}
                                   disabled={savingId === item.id}
                                   onClick={(e) => e.stopPropagation()}
-                                  style={{ width: '70px', padding: '0.2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--fg)', fontFamily: 'var(--font-english)' }}
+                                  style={{ width: '70px', padding: '0.2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--fg)' }}
                                 />
                               ) : (
                                 brownDisplay
                               )}
                             </td>
-                            <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)', fontWeight: '600' }}>
+                            <td className="tabular-nums" style={{ textAlign: 'center', fontWeight: '600' }}>
                               {isEditing ? (
                                 ((parseInt(tempWhite, 10) || 0) + (parseInt(tempBrown, 10) || 0)).toLocaleString()
                               ) : (
@@ -280,13 +295,13 @@ export default function MaterialsReport({ marble, nazalat, user, onUpdateMarbleS
                 <tr style={{ background: 'rgba(255,255,255,0.04)', borderTop: '2px solid var(--border)', fontWeight: '800' }}>
                   <td style={textDirectionStyle}>{t('grandTotalCumulative')}</td>
                   <td style={textDirectionStyle}>{t('allTasksAndZones')}</td>
-                  <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)', color: '#eef2f7' }}>
+                  <td className="tabular-nums" style={{ textAlign: 'center', color: '#eef2f7' }}>
                     {totalWhite.toLocaleString()}
                   </td>
-                  <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)', color: 'var(--accent)' }}>
+                  <td className="tabular-nums" style={{ textAlign: 'center', color: 'var(--accent)' }}>
                     {totalBrown.toLocaleString()}
                   </td>
-                  <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)', color: 'var(--success)' }}>
+                  <td className="tabular-nums" style={{ textAlign: 'center', color: 'var(--success)' }}>
                     {grandTotal.toLocaleString()}
                   </td>
                   <td style={textDirectionStyle}>

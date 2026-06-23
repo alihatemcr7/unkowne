@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Eye, EyeOff, Sun, Moon, Languages } from 'lucide-react';
 import companyLogo from '../assets/company-logo.webp';
@@ -40,15 +40,7 @@ export default function Login({ onLoginSuccess, t, lang, setLang, theme, setThem
     }
   };
 
-  const autofillUser = (type) => {
-    if (type === 'admin') {
-      setEmail('engineer@project.com');
-      setPassword('admin123');
-    } else {
-      setEmail('viewer@project.com');
-      setPassword('viewer123');
-    }
-  };
+
 
   return (
     <div className="login-container" style={{ flexDirection: 'column', gap: '1rem', position: 'relative', overflow: 'hidden' }}>
@@ -177,6 +169,8 @@ export default function Login({ onLoginSuccess, t, lang, setLang, theme, setThem
           >
             {loading ? t('checking') : t('loginBtn')}
           </button>
+
+
         </form>
 
         </BorderGlow>

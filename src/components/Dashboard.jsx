@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Building2, 
-  Percent, 
   Layers, 
   Grid, 
-  HelpCircle,
   TrendingUp,
   Award,
   CheckCircle2,
@@ -15,13 +13,10 @@ import {
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
-  AreaChart, 
-  Area, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  Legend, 
   BarChart, 
   Bar,
   PieChart,
@@ -29,7 +24,7 @@ import {
   Cell
 } from 'recharts';
 
-export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgress, onUpdateNotes, t, lang, translateText }) {
+export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgress, t, lang, translateText }) {
   const [editingTask, setEditingTask] = useState(null);
   const [tempProgress, setTempProgress] = useState({});
   const [tempCompleted, setTempCompleted] = useState({});
@@ -140,251 +135,245 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+      className="bento-grid"
     >
       
       {/* 1. KPI Cards */}
-      <div className="kpi-container">
-        
-        {/* Card 1: Overall progress */}
-        <motion.div variants={itemVariants} className="kpi-card glass-panel success">
-          <div className="kpi-details">
-            <span className="kpi-title">{t('kpiProgressTitle')}</span>
-            <span className="kpi-value">{kpis.overall_progress_percent}%</span>
-            <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
-              <div 
-                className="progress-bar-fill success" 
-                style={{ width: `${kpis.overall_progress_percent}%` }}
-              ></div>
-            </div>
-            <span className="kpi-subtext" style={{ marginTop: '4px' }}>{t('kpiProgressSubtext')}</span>
+      {/* Card 1: Overall progress */}
+      <motion.div variants={itemVariants} className="kpi-card bento-col-3 success">
+        <div className="kpi-details">
+          <span className="kpi-title">{t('kpiProgressTitle')}</span>
+          <span className="kpi-value tabular-nums">{kpis.overall_progress_percent}%</span>
+          <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
+            <div 
+              className="progress-bar-fill success" 
+              style={{ width: `${kpis.overall_progress_percent}%` }}
+            ></div>
           </div>
-          <div className="kpi-icon-container" style={{ background: 'var(--success)', color: 'white' }}>
-            <Award size={26} />
-          </div>
-        </motion.div>
+          <span className="kpi-subtext" style={{ marginTop: '4px' }}>{t('kpiProgressSubtext')}</span>
+        </div>
+        <div className="kpi-icon-container" style={{ color: 'var(--success)' }}>
+          <Award size={22} />
+        </div>
+      </motion.div>
 
-        {/* Card 2: Marble pieces */}
-        <motion.div variants={itemVariants} className="kpi-card glass-panel">
-          <div className="kpi-details">
-            <span className="kpi-title">{t('kpiMarbleTitle')}</span>
-            <span className="kpi-value">
-              {kpis.applied_marble_pieces.toLocaleString()}
-            </span>
-            <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-              {t('kpiMarbleSubtext')}
-            </span>
-          </div>
-          <div className="kpi-icon-container">
-            <Layers size={26} />
-          </div>
-        </motion.div>
+      {/* Card 2: Marble pieces */}
+      <motion.div variants={itemVariants} className="kpi-card bento-col-3">
+        <div className="kpi-details">
+          <span className="kpi-title">{t('kpiMarbleTitle')}</span>
+          <span className="kpi-value tabular-nums">
+            {kpis.applied_marble_pieces.toLocaleString()}
+          </span>
+          <span className="kpi-subtext" style={{ marginTop: '8px' }}>
+            {t('kpiMarbleSubtext')}
+          </span>
+        </div>
+        <div className="kpi-icon-container">
+          <Layers size={22} />
+        </div>
+      </motion.div>
 
-        {/* Card 3: Skylight progress */}
-        <motion.div variants={itemVariants} className="kpi-card glass-panel success">
-          <div className="kpi-details">
-            <span className="kpi-title">{t('kpiSkylightTitle')}</span>
-            <span className="kpi-value">{kpis.skylight_progress_percent}%</span>
-            <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
-              <div 
-                className="progress-bar-fill success" 
-                style={{ width: '100%' }}
-              ></div>
-            </div>
-            <span className="kpi-subtext" style={{ marginTop: '4px' }}>{t('kpiSkylightSubtext')}</span>
+      {/* Card 3: Skylight progress */}
+      <motion.div variants={itemVariants} className="kpi-card bento-col-3 success">
+        <div className="kpi-details">
+          <span className="kpi-title">{t('kpiSkylightTitle')}</span>
+          <span className="kpi-value tabular-nums">{kpis.skylight_progress_percent}%</span>
+          <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
+            <div 
+              className="progress-bar-fill success" 
+              style={{ width: '100%' }}
+            ></div>
           </div>
-          <div className="kpi-icon-container" style={{ background: 'var(--success)', color: 'white' }}>
-            <CheckCircle2 size={26} />
-          </div>
-        </motion.div>
+          <span className="kpi-subtext" style={{ marginTop: '4px' }}>{t('kpiSkylightSubtext')}</span>
+        </div>
+        <div className="kpi-icon-container" style={{ color: 'var(--success)' }}>
+          <CheckCircle2 size={22} />
+        </div>
+      </motion.div>
 
-        {/* Card 4: Nazalat progress */}
-        <motion.div variants={itemVariants} className="kpi-card glass-panel pending">
-          <div className="kpi-details">
-            <span className="kpi-title">{t('kpiNazalatTitle')}</span>
-            <span className="kpi-value">{kpis.nazalat_progress_percent}%</span>
-            <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
-              <div 
-                className="progress-bar-fill warning" 
-                style={{ width: `${kpis.nazalat_progress_percent}%` }}
-              ></div>
-            </div>
-            <span className="kpi-subtext" style={{ marginTop: '4px' }}>
-              {t('kpiNazalatSubtext')
-                .replace('{completed}', kpis.nazalat_completed)
-                .replace('{total}', kpis.nazalat_total)}
-            </span>
+      {/* Card 4: Nazalat progress */}
+      <motion.div variants={itemVariants} className="kpi-card bento-col-3 pending">
+        <div className="kpi-details">
+          <span className="kpi-title">{t('kpiNazalatTitle')}</span>
+          <span className="kpi-value tabular-nums">{kpis.nazalat_progress_percent}%</span>
+          <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
+            <div 
+              className="progress-bar-fill warning" 
+              style={{ width: `${kpis.nazalat_progress_percent}%` }}
+            ></div>
           </div>
-          <div className="kpi-icon-container" style={{ background: 'var(--warn)', color: 'white' }}>
-            <Clock size={26} />
-          </div>
-        </motion.div>
-
-      </div>
+          <span className="kpi-subtext" style={{ marginTop: '4px' }}>
+            {t('kpiNazalatSubtext')
+              .replace('{completed}', kpis.nazalat_completed)
+              .replace('{total}', kpis.nazalat_total)}
+          </span>
+        </div>
+        <div className="kpi-icon-container" style={{ color: 'var(--warn)' }}>
+          <Clock size={22} />
+        </div>
+      </motion.div>
 
       {/* 2. Charts Visual Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-        
-        {/* Chart 1: Progress Comparison */}
-        <motion.div variants={itemVariants} className="glass-panel" style={{ height: '420px', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
-            {t('chartProgressTitle')}
-          </h3>
-          <div style={{ flex: 1, minHeight: 0, width: '100%', minWidth: 0, overflow: 'hidden' }}>
-            <ResponsiveContainer width="100%" height={340} minWidth={0}>
-              <BarChart
-                layout="vertical"
-                data={chartData}
-                margin={{ top: 10, right: 15, left: 15, bottom: 10 }}
+      {/* Chart 1: Progress Comparison */}
+      <motion.div variants={itemVariants} className="glass-panel bento-col-8" style={{ height: '420px', display: 'flex', flexDirection: 'column' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
+          {t('chartProgressTitle')}
+        </h3>
+        <div style={{ flex: 1, minHeight: 0, width: '100%', minWidth: 0, overflow: 'hidden' }}>
+          <ResponsiveContainer width="100%" height={340} minWidth={0}>
+            <BarChart
+              layout="vertical"
+              data={chartData}
+              margin={{ top: 10, right: 15, left: 15, bottom: 10 }}
+            >
+              <defs>
+                <linearGradient id="progressGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#ea580c" stopOpacity={0.45}/>
+                  <stop offset="100%" stopColor="#f97316" stopOpacity={0.95}/>
+                </linearGradient>
+                <linearGradient id="successGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#059669" stopOpacity={0.45}/>
+                  <stop offset="100%" stopColor="#10b981" stopOpacity={0.95}/>
+                </linearGradient>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.4" floodColor="#f97316" />
+                </filter>
+                <filter id="successShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.4" floodColor="#10b981" />
+                </filter>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" horizontal={false} />
+              <XAxis 
+                type="number"
+                domain={[0, 100]}
+                stroke="var(--border)"
+                tick={{ fontSize: 9.5, fill: 'var(--muted)', fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)' }}
+                tickLine={false}
+              />
+              <YAxis 
+                type="category"
+                dataKey="name" 
+                stroke="var(--border)" 
+                tick={{ fontSize: 8.5, fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', fill: 'var(--fg-2)' }}
+                width={120}
+                tickLine={false}
+              />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'var(--surface-solid)', 
+                  backdropFilter: 'blur(12px)',
+                  borderColor: 'var(--border)', 
+                  color: 'var(--fg)', 
+                  textAlign: lang === 'ar' ? 'right' : 'left', 
+                  fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', 
+                  borderRadius: 'var(--radius-sm)' 
+                }}
+              />
+              <Bar 
+                dataKey={lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'} 
+                radius={lang === 'ar' ? [4, 0, 0, 4] : [0, 4, 4, 0]}
+                barSize={12}
               >
-                <defs>
-                  <linearGradient id="progressGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.35}/>
-                    <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.95}/>
-                  </linearGradient>
-                  <linearGradient id="successGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.35}/>
-                    <stop offset="100%" stopColor="#10b981" stopOpacity={0.95}/>
-                  </linearGradient>
-                  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.4" floodColor="#f59e0b" />
-                  </filter>
-                  <filter id="successShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.4" floodColor="#10b981" />
-                  </filter>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" horizontal={false} />
-                <XAxis 
-                  type="number"
-                  domain={[0, 100]}
-                  stroke="var(--border)"
-                  tick={{ fontSize: 9.5, fill: 'var(--muted)', fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)' }}
-                  tickLine={false}
-                />
-                <YAxis 
-                  type="category"
-                  dataKey="name" 
-                  stroke="var(--border)" 
-                  tick={{ fontSize: 8, fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', fill: 'var(--fg-2)' }}
-                  width={100}
-                  tickLine={false}
-                />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'var(--surface-warm)', 
-                    backdropFilter: 'blur(8px)',
-                    borderColor: 'var(--border)', 
-                    color: 'var(--fg)', 
-                    textAlign: lang === 'ar' ? 'right' : 'left', 
-                    fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', 
-                    borderRadius: 'var(--radius-sm)' 
-                  }}
-                />
-                <Bar 
-                  dataKey={lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'} 
-                  radius={lang === 'ar' ? [4, 0, 0, 4] : [0, 4, 4, 0]}
-                  barSize={12}
-                >
-                  {chartData.map((entry, index) => {
-                    const is100 = entry[lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'] === 100;
-                    return (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={is100 ? 'url(#successGradient)' : 'url(#progressGradient)'} 
-                        filter={is100 ? 'url(#successShadow)' : 'url(#shadow)'}
-                      />
-                    );
-                  })}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </motion.div>
-
-        {/* Chart 2: Marble Status Distribution */}
-        <motion.div variants={itemVariants} className="glass-panel" style={{ height: '420px', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Building2 size={18} style={{ color: 'var(--accent)' }} />
-            {t('chartMarbleTitle')}
-          </h3>
-          <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ width: '200px', height: '200px', minWidth: 0 }}>
-              <PieChart width={200} height={200}>
-                <defs>
-                  <linearGradient id="whiteMarbleGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#ffffff" stopOpacity={0.95}/>
-                    <stop offset="100%" stopColor="#94a3b8" stopOpacity={0.8}/>
-                  </linearGradient>
-                  <linearGradient id="brownMarbleGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#fbbf24" stopOpacity={0.95}/>
-                    <stop offset="100%" stopColor="#b45309" stopOpacity={0.8}/>
-                  </linearGradient>
-                  <filter id="pieShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.4" floodColor="#000000" />
-                  </filter>
-                </defs>
-                <Pie
-                  data={marbleChartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={4}
-                  dataKey="value"
-                >
-                  {marbleChartData.map((entry, index) => (
+                {chartData.map((entry, index) => {
+                  const is100 = entry[lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'] === 100;
+                  return (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={index === 0 ? 'url(#whiteMarbleGrad)' : 'url(#brownMarbleGrad)'} 
-                      filter="url(#pieShadow)"
+                      fill={is100 ? 'url(#successGradient)' : 'url(#progressGradient)'} 
+                      filter={is100 ? 'url(#successShadow)' : 'url(#shadow)'}
                     />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value) => `${value.toLocaleString()} ${t('pieces')}`}
-                  contentStyle={{ 
-                    background: 'var(--surface-warm)', 
-                    backdropFilter: 'blur(8px)',
-                    borderColor: 'var(--border)', 
-                    color: 'var(--fg)', 
-                    textAlign: lang === 'ar' ? 'right' : 'left', 
-                    fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', 
-                    borderRadius: 'var(--radius-sm)' 
-                  }}
-                />
-              </PieChart>
-            </div>
-            
-            {/* Custom Legend */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', paddingRight: '1rem', paddingLeft: '1rem' }}>
-              {marbleChartData.map((entry, index) => (
-                <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  );
+                })}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </motion.div>
+
+      {/* Chart 2: Marble Status Distribution */}
+      <motion.div variants={itemVariants} className="glass-panel bento-col-4" style={{ height: '420px', display: 'flex', flexDirection: 'column' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Building2 size={18} style={{ color: 'var(--accent)' }} />
+          {t('chartMarbleTitle')}
+        </h3>
+        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', minHeight: 0 }}>
+          <div style={{ width: '160px', height: '160px', minWidth: 0, position: 'relative' }}>
+            <PieChart width={160} height={160}>
+              <defs>
+                <linearGradient id="whiteMarbleGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity={0.95}/>
+                  <stop offset="100%" stopColor="#cbd5e1" stopOpacity={0.8}/>
+                </linearGradient>
+                <linearGradient id="brownMarbleGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#fb923c" stopOpacity={0.95}/>
+                  <stop offset="100%" stopColor="#78350f" stopOpacity={0.85}/>
+                </linearGradient>
+                <filter id="pieShadow" x="-25%" y="-25%" width="150%" height="150%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.3" floodColor="#000000" />
+                </filter>
+              </defs>
+              <Pie
+                data={marbleChartData}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={70}
+                paddingAngle={4}
+                dataKey="value"
+              >
+                {marbleChartData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={index === 0 ? 'url(#whiteMarbleGrad)' : 'url(#brownMarbleGrad)'} 
+                    filter="url(#pieShadow)"
+                  />
+                ))}
+              </Pie>
+              <Tooltip 
+                formatter={(value) => `${value.toLocaleString()} ${t('pieces')}`}
+                contentStyle={{ 
+                  background: 'var(--surface-solid)', 
+                  backdropFilter: 'blur(12px)',
+                  borderColor: 'var(--border)', 
+                  color: 'var(--fg)', 
+                  textAlign: lang === 'ar' ? 'right' : 'left', 
+                  fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', 
+                  borderRadius: 'var(--radius-sm)' 
+                }}
+              />
+            </PieChart>
+          </div>
+          
+          {/* Custom Legend */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', width: '100%', padding: '0 0.5rem' }}>
+            {marbleChartData.map((entry, index) => (
+              <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <div style={{ 
-                    width: '12px', 
-                    height: '12px', 
+                    width: '10px', 
+                    height: '10px', 
                     borderRadius: '3px', 
                     background: index === 0 
-                      ? 'linear-gradient(135deg, #ffffff, #94a3b8)' 
-                      : 'linear-gradient(135deg, #fbbf24, #b45309)', 
+                      ? 'linear-gradient(135deg, #ffffff, #cbd5e1)' 
+                      : 'linear-gradient(135deg, #fb923c, #78350f)', 
                     border: '1px solid var(--border)' 
                   }}></div>
-                  <span style={{ color: 'var(--muted)' }}>{entry.name}:</span>
-                  <span style={{ fontWeight: '700', fontFamily: 'var(--font-english)' }}>{entry.value.toLocaleString()}</span>
+                  <span style={{ color: 'var(--muted)' }}>{entry.name}</span>
                 </div>
-              ))}
-              <div style={{ borderTop: '1px solid var(--border)', marginTop: '0.5rem', paddingTop: '0.5rem', fontWeight: '700' }}>
-                <span>{t('chartTotalApplied')}</span>
-                <span style={{ color: 'var(--accent)' }}>{kpis.applied_marble_pieces.toLocaleString()}</span>
+                <span className="tabular-nums" style={{ fontWeight: '700' }}>{entry.value.toLocaleString()}</span>
               </div>
+            ))}
+            <div style={{ borderTop: '1px solid var(--border)', marginTop: '0.25rem', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}>
+              <span>{t('chartTotalApplied')}</span>
+              <span className="tabular-nums" style={{ color: 'var(--accent)' }}>{kpis.applied_marble_pieces.toLocaleString()}</span>
             </div>
           </div>
-        </motion.div>
-
-      </div>
+        </div>
+      </motion.div>
 
       {/* 3. General Project Progress Table */}
-      <motion.div variants={itemVariants} className="glass-panel">
+      <motion.div variants={itemVariants} className="glass-panel bento-col-12">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <h3 style={{ fontSize: '1.2rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Grid size={20} style={{ color: 'var(--accent)' }} />
@@ -471,8 +460,8 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                               </span>
                             )}
                           </td>
-                          <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}>{qtyDisplay}</td>
-                          <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}>
+                          <td className="tabular-nums" style={{ textAlign: 'center' }}>{qtyDisplay}</td>
+                          <td className="tabular-nums" style={{ textAlign: 'center' }}>
                             {isEditing && hasQty ? (
                               <div onClick={(e) => e.stopPropagation()}>
                                 <input
@@ -491,17 +480,17 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                               compDisplay
                             )}
                           </td>
-                          <td style={{ textAlign: 'center', fontFamily: 'var(--font-english)' }}>
+                          <td className="tabular-nums" style={{ textAlign: 'center' }}>
                             {isEditing && hasQty ? (
                               `${(task.total_quantity - (tempCompleted[task.id] !== undefined ? tempCompleted[task.id] : (task.completed_quantity ?? 0))).toLocaleString()} ${unitTrans}`
                             ) : (
                               pendDisplay
                             )}
                           </td>
-                          <td style={{ textAlign: 'center' }}>
+                          <td className="tabular-nums" style={{ textAlign: 'center' }}>
                             {isEditing ? (
                               hasQty ? (
-                                <span style={{ fontWeight: '700' }}>
+                                <span className="tabular-nums" style={{ fontWeight: '700' }}>
                                   {(tempProgress[task.id] !== undefined ? tempProgress[task.id] : task.progress_percent).toFixed(2)}%
                                 </span>
                               ) : (
@@ -522,7 +511,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                               )
                             ) : (
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
-                                <span style={{ fontWeight: '700', color: task.progress_percent === 100 ? 'var(--success)' : 'var(--fg)' }}>
+                                <span className="tabular-nums" style={{ fontWeight: '700', color: task.progress_percent === 100 ? 'var(--success)' : 'var(--fg)' }}>
                                   {task.progress_percent.toFixed(2)}%
                                 </span>
                                 <div className="progress-bar-container" style={{ width: '70px', height: '4px' }}>

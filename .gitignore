@@ -34,3 +34,9 @@ dist-ssr
 server/data/materials_consumption.json
 server/uploads/*
 !server/uploads/.gitkeep
+
+# Agent & Cursor directories
+.agent/
+.agents/
+.cursor/
+

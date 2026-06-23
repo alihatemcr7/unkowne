@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
+import { Search, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function TrackingLogs({ nazalat, user, onToggleNazala, loading, t, lang, translateText }) {
   const [selectedZone, setSelectedZone] = useState('');
@@ -36,10 +36,6 @@ export default function TrackingLogs({ nazalat, user, onToggleNazala, loading, t
   };
 
   const stats = getStats();
-
-  const textDirectionStyle = {
-    textAlign: lang === 'ar' ? 'right' : 'left'
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -125,15 +121,15 @@ export default function TrackingLogs({ nazalat, user, onToggleNazala, loading, t
         <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
           <div>
             <span style={{ color: 'var(--muted)' }}>{t('statsShowing')}</span>
-            <span style={{ fontWeight: '700' }}>{stats.total}</span>
+            <span className="tabular-nums" style={{ fontWeight: '700' }}>{stats.total}</span>
           </div>
           <div>
             <span style={{ color: 'var(--success)' }}>{t('statsCompleted')}</span>
-            <span style={{ fontWeight: '700' }}>{stats.completed}</span>
+            <span className="tabular-nums" style={{ fontWeight: '700' }}>{stats.completed}</span>
           </div>
           <div>
             <span style={{ color: 'var(--warn)' }}>{t('statsPending')}</span>
-            <span style={{ fontWeight: '700' }}>{stats.pending}</span>
+            <span className="tabular-nums" style={{ fontWeight: '700' }}>{stats.pending}</span>
           </div>
         </div>
       </div>
@@ -161,7 +157,7 @@ export default function TrackingLogs({ nazalat, user, onToggleNazala, loading, t
             
             return (
               <motion.div variants={itemVariants} key={n.id} className={`nazala-card ${isCompleted ? 'completed' : ''}`}>
-                <span className="nazala-code" style={{ color: isCompleted ? 'var(--success)' : 'var(--warn)' }}>
+                <span className="nazala-code tabular-nums" style={{ color: isCompleted ? 'var(--success)' : 'var(--warn)' }}>
                   {n.code}
                 </span>
                 <span className="nazala-zone">{lang === 'ar' ? n.zone.replace('Zone', 'المنطقة') : n.zone}</span>

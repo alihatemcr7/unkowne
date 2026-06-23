@@ -1,34 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Dynamic Glassmorphism Tokens */
-  --bg-color-1: #e0e7ff;
-  --bg-color-2: #fae8ff;
-  --bg-color-3: #ffedd5;
+  /* Premium Light Theme Variables (Carrara & Sandstone) */
+  --bg-color-1: #f8fafc;
+  --bg-color-2: #f1f5f9;
+  --bg-color-3: #e2e8f0;
 
   --surface: rgba(255, 255, 255, 0.7);
-  --surface-warm: rgba(255, 255, 255, 0.9);
+  --surface-warm: rgba(255, 255, 255, 0.85);
   --surface-solid: #ffffff;
 
   --fg: #0f172a;
   --fg-2: #334155;
   --muted: #64748b;
 
-  --border: rgba(255, 255, 255, 0.5);
-  --border-soft: rgba(255, 255, 255, 0.2);
+  --border: rgba(15, 23, 42, 0.08);
+  --border-soft: rgba(15, 23, 42, 0.04);
 
-  --accent: #f59e0b;
-  /* Golden Accent */
+  --accent: #f97316; /* Safety Orange */
   --accent-on: #ffffff;
-  --accent-hover: #d97706;
-  --accent-active: #b45309;
+  --accent-hover: #ea580c;
+  --accent-active: #c2410c;
 
   --success: #10b981;
   --warn: #f59e0b;
   --danger: #ef4444;
 
   --font-arabic: 'Cairo', system-ui, sans-serif;
-  --font-english: 'Outfit', system-ui, sans-serif;
+  --font-english: 'Fira Sans', 'Outfit', system-ui, sans-serif;
+  --font-mono: 'Fira Code', monospace;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -45,14 +45,20 @@
   --space-6: 1.5rem;
   --space-8: 2rem;
 
-  --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 32px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
   --radius-pill: 9999px;
 
-  --elev-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  --elev-raised: 0 12px 40px rgba(0, 0, 0, 0.1);
-  --focus-ring: 0 0 0 4px rgba(245, 158, 11, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+
+  --elev-glass: var(--shadow-md);
+  --elev-raised: var(--shadow-lg);
+  --focus-ring: 0 0 0 3px rgba(249, 115, 22, 0.25);
 
   --motion-fast: 150ms;
   --motion-base: 300ms;
@@ -60,30 +66,29 @@
   --transition-smooth: all var(--motion-base) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Overrides */
+/* Premium Dark Theme Overrides (Slate Obsidian & Safety Orange / Patina Cyan) */
 [data-theme="dark"] {
-  --bg-color-1: #060814; /* Deep premium space background */
-  --bg-color-2: #0c0f1d;
-  --bg-color-3: #030409;
+  --bg-color-1: #090d16; /* Deep premium space background */
+  --bg-color-2: #0f172a;
+  --bg-color-3: #020617;
 
-  --surface: rgba(15, 23, 42, 0.45);
-  --surface-warm: rgba(20, 30, 54, 0.7);
-  --surface-solid: #0d111f;
+  --surface: rgba(15, 23, 42, 0.6);
+  --surface-warm: rgba(30, 41, 59, 0.7);
+  --surface-solid: #0b0f19;
 
   --fg: #f8fafc;
   --fg-2: #94a3b8; /* Slate-400 secondary text */
   --muted: #64748b; /* Slate-500 muted text */
 
-  --border: rgba(255, 255, 255, 0.05);
-  --border-soft: rgba(255, 255, 255, 0.02);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-soft: rgba(255, 255, 255, 0.04);
 
-  --accent: #f59e0b;
+  --accent: #f97316;
   --accent-on: #ffffff;
-  --accent-hover: #fbbf24;
+  --accent-hover: #fb923c;
 
-  /* Premium Glass shadows */
-  --elev-glass: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
-  --elev-raised: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  --elev-glass: 0 12px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --elev-raised: 0 20px 40px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Reset & Base Styles */

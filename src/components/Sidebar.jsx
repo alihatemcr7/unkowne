@@ -1,4 +1,3 @@
-import React from 'react';
 import { LayoutDashboard, ClipboardList, Layers, LogOut, ChevronLeft, ChevronRight, MessageSquare, FileText, Users } from 'lucide-react';
 import companyLogo from '../assets/company-logo.webp';
 
