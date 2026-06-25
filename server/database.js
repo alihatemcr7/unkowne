@@ -30,6 +30,17 @@ const dbRun = async (sql, params = []) => {
       return { changes: 1 };
     }
 
+    // 1b. UPDATE sub_units details
+    if (sqlClean.includes('UPDATE sub_units SET white_marked = ?, white_extra = ?, white_applied = ?, white_date = ?, brown_marked = ?, brown_extra = ?, brown_applied = ?, brown_date = ?, status = ?, notes = ? WHERE id = ?')) {
+      const [white_marked, white_extra, white_applied, white_date, brown_marked, brown_extra, brown_applied, brown_date, status, notes, id] = params;
+      const { error } = await supabase
+        .from('sub_units')
+        .update({ white_marked, white_extra, white_applied, white_date, brown_marked, brown_extra, brown_applied, brown_date, status, notes })
+        .eq('id', id);
+      if (error) throw error;
+      return { changes: 1 };
+    }
+
     // 2. UPDATE tasks SET completed_quantity = ?, progress_percent = ? WHERE id = ?
     if (sqlClean.includes('UPDATE tasks SET completed_quantity = ?, progress_percent = ? WHERE id = ?')) {
       const [completed, progress, taskId] = params;
@@ -145,7 +156,7 @@ const dbGet = async (sql, params = []) => {
     if (sqlClean.includes('SELECT status, task_id, code, zone FROM sub_units WHERE id = ?')) {
       const { data, error } = await supabase
         .from('sub_units')
-        .select('status, task_id, code, zone')
+        .select('status, task_id, code, zone, white_marked, white_extra, white_applied, white_date, brown_marked, brown_extra, brown_applied, brown_date')
         .eq('id', params[0])
         .maybeSingle();
       if (error) throw error;

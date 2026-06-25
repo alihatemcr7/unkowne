@@ -15,6 +15,7 @@ import MaterialsReport from './components/MaterialsReport';
 import DailyUpdates from './components/DailyUpdates';
 import MaterialsConsumption from './components/MaterialsConsumption';
 import UsersManagement from './components/UsersManagement';
+import LandingPage from './components/LandingPage';
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -24,6 +25,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   
   // Theme & Language State
   const [lang, setLang] = useState(() => localStorage.getItem('project_lang') || 'ar');
@@ -151,6 +153,31 @@ export default function App() {
     }
   };
 
+  // 1b. Update Nazala Details (Admin only)
+  const handleUpdateNazalaDetails = async (id, details) => {
+    try {
+      const response = await fetch(`/api/nazalat/${id}/details`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...details, userName: user.name, userRole: user.role })
+      });
+      if (!response.ok) throw new Error('فشل تحديث تفاصيل النزلة.');
+      
+      // Local update
+      setNazalat(prev => prev.map(n => n.id === id ? { ...n, ...details } : n));
+      
+      // Background refresh
+      const dashRes = await fetch('/api/dashboard');
+      if (dashRes.ok) {
+        const dashData = await dashRes.json();
+        setKpis(dashData.kpis);
+        setTasks(dashData.tasks);
+      }
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   // 2. Update Manual Task Progress (Admin only)
   const handleUpdateProgress = async (taskId, progressPercent, notes, completedQuantity) => {
     try {
@@ -220,6 +247,18 @@ export default function App() {
   const handlePdfPrint = () => exportToPDF();
 
   if (!user) {
+    if (!showLogin) {
+      return (
+        <LandingPage 
+          onNavigateToLogin={() => setShowLogin(true)}
+          lang={lang} 
+          setLang={setLang} 
+          theme={theme} 
+          setTheme={setTheme} 
+        />
+      );
+    }
+
     return (
       <Login 
         onLoginSuccess={handleLoginSuccess} 
@@ -359,6 +398,7 @@ export default function App() {
                   nazalat={nazalat} 
                   user={user}
                   onToggleNazala={handleToggleNazala}
+                  onUpdateNazalaDetails={handleUpdateNazalaDetails}
                   loading={loading}
                   t={t}
                   lang={lang}

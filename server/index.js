@@ -227,6 +227,86 @@ app.post('/api/nazalat/:id/toggle', async (req, res) => {
   }
 });
 
+// 4b. Update Nazala Details (Admin only)
+app.post('/api/nazalat/:id/details', async (req, res) => {
+  const { id } = req.params;
+  const { 
+    userName, 
+    userRole,
+    white_marked,
+    white_extra,
+    white_applied,
+    white_date,
+    brown_marked,
+    brown_extra,
+    brown_applied,
+    brown_date,
+    status
+  } = req.body;
+
+  try {
+    const item = await dbGet('SELECT status, task_id, code, zone FROM sub_units WHERE id = ?', [id]);
+    if (!item) {
+      return res.status(404).json({ error: 'النزلة المطلوبة غير موجودة.' });
+    }
+
+    const notes = status === 'منجز' ? 'مطابق لجرودات الموقع' : 'قيد التجهيز والعمل';
+
+    // Update details
+    await dbRun(
+      'UPDATE sub_units SET white_marked = ?, white_extra = ?, white_applied = ?, white_date = ?, brown_marked = ?, brown_extra = ?, brown_applied = ?, brown_date = ?, status = ?, notes = ? WHERE id = ?', 
+      [
+        white_marked || 0,
+        white_extra || 0,
+        white_applied || 0,
+        white_date || '',
+        brown_marked || 0,
+        brown_extra || 0,
+        brown_applied || 0,
+        brown_date || '',
+        status || item.status, 
+        notes, 
+        id
+      ]
+    );
+
+    // Recalculate parent task progress
+    const totalCountRow = await dbGet('SELECT COUNT(*) as count FROM sub_units WHERE task_id = ?', [item.task_id]);
+    const completedCountRow = await dbGet('SELECT COUNT(*) as count FROM sub_units WHERE task_id = ? AND status = ?', [item.task_id, 'منجز']);
+
+    const total = totalCountRow.count;
+    const completed = completedCountRow.count;
+    const progress = total > 0 ? (completed / total) * 100 : 0;
+
+    await dbRun(
+      'UPDATE tasks SET completed_quantity = ?, progress_percent = ? WHERE id = ?',
+      [completed, parseFloat(progress.toFixed(2)), item.task_id]
+    );
+
+    // Auto-log system message
+    if (userName) {
+      const actionText = `قام (${userName}) بتحديث تفاصيل النزلة ${item.code} في ${item.zone}. (الأبيض المطبق: ${white_applied || 0}، الجوزي المطبق: ${brown_applied || 0}، الحالة: ${status || item.status})`;
+      
+      await dbRun(
+        `INSERT INTO daily_updates (user_id, sender_name, sender_role, message_text, media_url, media_type, reply_to_id)
+         VALUES (NULL, ?, ?, ?, NULL, NULL, NULL)`,
+        ['النظام', 'system', actionText]
+      );
+    }
+
+    res.json({
+      success: true,
+      id,
+      status: status || item.status,
+      completed,
+      progress: parseFloat(progress.toFixed(2))
+    });
+  } catch (error) {
+    console.error('Update details error:', error);
+    res.status(500).json({ error: 'حدث خطأ أثناء تحديث تفاصيل النزلة.' });
+  }
+});
+
 // 5. Update Manual Task Progress (Admin only)
 app.post('/api/tasks/:id/progress', async (req, res) => {
   const { id } = req.params;

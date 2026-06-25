@@ -74,8 +74,9 @@ export default function Header({
         {/* Theme Switcher */}
         <button 
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-          className="switch-btn"
+          className="btn-pill flex-center gap-sm"
           title={lang === 'ar' ? 'تغيير المظهر' : 'Toggle Theme'}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           <span>
@@ -88,30 +89,30 @@ export default function Header({
         {/* Language Switcher */}
         <button 
           onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} 
-          className="switch-btn"
+          className="btn-pill flex-center gap-sm"
           title={lang === 'ar' ? 'English' : 'العربية'}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           <Languages size={18} />
           <span>{lang === 'ar' ? 'English' : 'العربية'}</span>
         </button>
 
-        {/* Refresh button */}
         <button 
           onClick={onRefresh} 
-          className="btn btn-secondary" 
+          className="btn-pill flex-center" 
           title={t('refresh')}
-          style={{ padding: '0.6rem' }}
+          style={{ display: 'flex', alignItems: 'center', padding: '8px' }}
         >
           <RefreshCw size={18} />
         </button>
 
         {/* Smart Export Actions */}
-        <button onClick={onExcelExport} className="btn btn-secondary" title={t('exportExcel')}>
+        <button onClick={onExcelExport} className="btn-pill flex-center gap-sm" title={t('exportExcel')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <FileSpreadsheet size={18} />
           <span>{lang === 'ar' ? 'تصدير Excel' : 'Excel'}</span>
         </button>
 
-        <button onClick={onPdfPrint} className="btn btn-secondary" title={t('exportPdf')}>
+        <button onClick={onPdfPrint} className="btn-pill flex-center gap-sm" title={t('exportPdf')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Printer size={18} />
           <span>{lang === 'ar' ? 'تصدير PDF' : 'PDF'}</span>
         </button>
