@@ -278,11 +278,26 @@ export default function App() {
 
 
   return (
-    <div className="app-container">
-      {/* Dynamic Ambient Background Blobs for Glassmorphism Refraction */}
-      <div className="ambient-blob blob-teal" />
-      <div className="ambient-blob blob-amber" />
-      <div className="ambient-blob blob-purple" />
+    <div
+      className="app-container"
+      style={{ background: 'var(--bg-1)' }}
+    >
+      {/* Subtle ambient emerald orb — single accent lock */}
+      <div
+        aria-hidden
+        style={{
+          position: 'fixed',
+          top: '-25vw',
+          right: '-10vw',
+          width: '50vw',
+          height: '50vw',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(5,150,105,0.10) 0%, transparent 68%)',
+          filter: 'blur(60px)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
 
       {/* ── ترويسة التقرير المطبوع — مأخوذة من CONFIG_PDF ── */}
       <div className="print-header">
@@ -358,9 +373,14 @@ export default function App() {
         )}
 
         {loading && !kpis ? (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '1rem' }}>
-            <Construction size={48} className="text-primary" style={{ animation: 'spin 2s linear infinite' }} />
-            <p style={{ color: 'var(--color-text-secondary)' }}>{t('loading')}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '1.25rem' }}>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+            >
+              <Construction size={36} style={{ color: 'var(--accent)' }} />
+            </motion.div>
+            <p style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>{t('loading')}</p>
           </div>
         ) : (
           <AnimatePresence mode="wait">

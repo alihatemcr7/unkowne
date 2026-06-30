@@ -1,76 +1,148 @@
-import { LayoutDashboard, ClipboardList, Layers, LogOut, ChevronLeft, ChevronRight, MessageSquare, FileText, Users } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  LayoutDashboard, ClipboardList, Layers,
+  LogOut, ChevronLeft, ChevronRight,
+  MessageSquare, FileText, Users,
+} from 'lucide-react';
 import companyLogo from '../assets/company-logo.webp';
 
-export default function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, user, onLogout, t, lang, mobileOpen, setMobileOpen }) {
+const SPRING = { type: 'spring', stiffness: 300, damping: 30 };
+
+export default function Sidebar({
+  activeTab, setActiveTab,
+  collapsed, setCollapsed,
+  user, onLogout,
+  t, lang,
+  mobileOpen, setMobileOpen,
+}) {
+  const isAr = lang === 'ar';
+
   const menuItems = [
-    { id: 'dashboard', label: t('menuDashboard'), icon: LayoutDashboard },
-    { id: 'tracking', label: t('menuTracking'), icon: ClipboardList },
-    { id: 'marble', label: t('menuMarble'), icon: Layers },
-    { id: 'materials-consumption', label: t('menuMaterialsConsumption'), icon: FileText },
-    { id: 'daily-updates', label: lang === 'ar' ? 'التحديث اليومي' : 'Daily Log & Chat', icon: MessageSquare }
+    { id: 'dashboard',             label: t('menuDashboard'),              icon: LayoutDashboard },
+    { id: 'tracking',              label: t('menuTracking'),               icon: ClipboardList   },
+    { id: 'marble',                label: t('menuMarble'),                 icon: Layers          },
+    { id: 'materials-consumption', label: t('menuMaterialsConsumption'),   icon: FileText        },
+    { id: 'daily-updates',        label: isAr ? 'التحديث اليومي' : 'Daily Log', icon: MessageSquare },
   ];
 
-  if (user && user.role === 'super_admin') {
+  if (user?.role === 'super_admin') {
     menuItems.push({
-      id: 'users-management',
-      label: lang === 'ar' ? 'إدارة الحسابات' : 'Users Management',
-      icon: Users
+      id:    'users-management',
+      label: isAr ? 'إدارة الحسابات' : 'Users',
+      icon:  Users,
     });
   }
 
+  const collapseIcon = isAr
+    ? (collapsed ? <ChevronLeft size={15} /> : <ChevronRight size={15} />)
+    : (collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />);
+
   return (
-    <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+    <motion.aside
+      layout
+      className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}
+      transition={SPRING}
+    >
+      {/* ── Brand header ─────────────────────────────────────────── */}
       <div className="sidebar-header">
-        <div className="sidebar-logo" style={{ background: '#fff', padding: '4px', flexShrink: 0 }}>
-          <img src={companyLogo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        <div className="sidebar-logo">
+          <img
+            src={companyLogo}
+            alt="Logo"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 'var(--radius-sm)' }}
+          />
         </div>
-        <span className="sidebar-title">{t('sidebarTitle')}</span>
+
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.span
+              className="sidebar-title"
+              initial={{ opacity: 0, x: isAr ? 12 : -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{   opacity: 0, x: isAr ? 12 : -12 }}
+              transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            >
+              {t('sidebarTitle')}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
 
-      <nav className="sidebar-nav">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
+      {/* ── Navigation ──────────────────────────────────────────── */}
+      <nav className="sidebar-nav" aria-label={isAr ? 'القائمة الرئيسية' : 'Main navigation'}>
+        {menuItems.map(({ id, label, icon: Icon }, idx) => {
+          const isActive = activeTab === id;
           return (
-            <div
-              key={item.id}
-              className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+            <motion.button
+              key={id}
               onClick={() => {
-                setActiveTab(item.id);
+                setActiveTab(id);
                 if (setMobileOpen) setMobileOpen(false);
               }}
+              className={`nav-item ${isActive ? 'active' : ''}`}
+              initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.04, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ x: isAr ? -3 : 3 }}
+              whileTap={{ scale: 0.97 }}
+              aria-current={isActive ? 'page' : undefined}
+              title={collapsed ? label : undefined}
             >
-              <Icon size={20} style={{ flexShrink: 0 }} />
-              <span className="nav-label">{item.label}</span>
-            </div>
+              <Icon size={19} style={{ flexShrink: 0 }} strokeWidth={isActive ? 2.25 : 1.75} />
+              <span className="nav-label">{label}</span>
+            </motion.button>
           );
         })}
       </nav>
 
-      <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        <button
+      {/* ── Footer actions ──────────────────────────────────────── */}
+      <div
+        style={{
+          padding: '0.75rem',
+          borderTop: '1px solid var(--border)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.5rem',
+        }}
+      >
+        {/* Logout */}
+        <motion.button
           className="nav-item"
           onClick={onLogout}
-          style={{ 
-            background: 'none', 
-            border: 'none', 
-            width: '100%', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 'var(--space-3)' 
+          whileHover={{ x: isAr ? -3 : 3 }}
+          whileTap={{ scale: 0.97 }}
+          title={collapsed ? t('logout') : undefined}
+          style={{
+            color: 'var(--danger)',
           }}
         >
-          <LogOut size={20} style={{ flexShrink: 0 }} />
+          <LogOut size={19} style={{ flexShrink: 0 }} strokeWidth={1.75} />
           <span className="nav-label">{t('logout')}</span>
-        </button>
+        </motion.button>
 
-        <button
+        {/* Collapse toggle */}
+        <motion.button
           onClick={() => setCollapsed(!collapsed)}
-          className="btn btn-secondary"
-          style={{ padding: '0.4rem', borderRadius: '50%', width: '32px', height: '32px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          whileTap={{ scale: 0.9 }}
+          style={{
+            background: 'var(--surface-warm)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-pill)',
+            width: 28,
+            height: 28,
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'var(--muted)',
+            transition: 'color var(--motion-fast)',
+          }}
+          aria-label={collapsed ? (isAr ? 'توسيع القائمة' : 'Expand sidebar') : (isAr ? 'طي القائمة' : 'Collapse sidebar')}
         >
-          {collapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-        </button>
+          {collapseIcon}
+        </motion.button>
       </div>
-    </div>
+    </motion.aside>
   );
 }
