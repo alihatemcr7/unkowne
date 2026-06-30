@@ -213,7 +213,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
       {/* 1. KPI Cards */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
         gap: '1.5rem',
         marginBottom: '2.5rem'
       }}>
@@ -325,7 +325,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
       </div>
 
       {/* 2. Charts Visual Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
       {/* Chart 1: Progress Comparison */}
       <motion.div variants={itemVariants} style={{
         background: 'var(--surface)',
@@ -481,21 +481,21 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
         boxShadow: '0 20px 40px -15px rgba(0,0,0,0.03)',
         padding: '2rem'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-            <Grid size={20} style={{ color: 'var(--accent)' }} />
-            {t('tableTitle')}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: '800', display: 'flex', alignItems: 'flex-start', gap: '0.75rem', margin: 0, flex: '1 1 250px' }}>
+            <Grid size={20} style={{ color: 'var(--accent)', flexShrink: 0, marginTop: '4px' }} />
+            <span style={{ lineHeight: '1.4' }}>{t('tableTitle')}</span>
           </h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 auto', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
             {(user.role === 'admin' || user.role === 'super_admin') && (
-              <span style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--accent)', textAlign: 'right' }}>
                 {t('tableInstruction')}
               </span>
             )}
             <button
               onClick={handlePrintProgressReport}
               className="btn btn-secondary"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', borderColor: 'rgba(16, 185, 129, 0.2)' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', borderColor: 'rgba(16, 185, 129, 0.2)', flexShrink: 0 }}
             >
               <Printer size={18} />
               {lang === 'ar' ? 'طباعة / تصدير PDF' : 'Print PDF'}

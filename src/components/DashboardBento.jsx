@@ -133,7 +133,7 @@ export default function DashboardBento({ kpis, tasks, lang }) {
       {/* --- Bento Grid --- */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
         gap: '1.5rem',
         alignItems: 'stretch'
       }}>
@@ -179,7 +179,7 @@ export default function DashboardBento({ kpis, tasks, lang }) {
             ) : latestReport ? (
               <>
                 {/* Metrics Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '1rem' }}>
                   {/* Cement */}
                   <div style={{
                     display: 'flex',
