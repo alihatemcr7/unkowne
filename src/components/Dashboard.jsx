@@ -24,6 +24,7 @@ import {
   Pie,
   Cell
 } from 'recharts';
+import DashboardBento from './DashboardBento';
 
 export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgress, t, lang, translateText }) {
   const [editingTask, setEditingTask] = useState(null);
@@ -207,6 +208,7 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
       animate="show"
       className="cyber-dashboard"
     >
+      <DashboardBento kpis={kpis} tasks={tasks} lang={lang} />
       
       {/* 1. KPI Cards */}
       <div className="cyber-kpi-row">
