@@ -74,9 +74,8 @@ export default function Header({
         {/* Theme Switcher */}
         <button 
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-          className="btn-pill flex-center gap-sm"
+          className="btn-pill"
           title={lang === 'ar' ? 'تغيير المظهر' : 'Toggle Theme'}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           <span>
@@ -89,9 +88,8 @@ export default function Header({
         {/* Language Switcher */}
         <button 
           onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} 
-          className="btn-pill flex-center gap-sm"
+          className="btn-pill"
           title={lang === 'ar' ? 'English' : 'العربية'}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           <Languages size={18} />
           <span>{lang === 'ar' ? 'English' : 'العربية'}</span>
@@ -99,20 +97,20 @@ export default function Header({
 
         <button 
           onClick={onRefresh} 
-          className="btn-pill flex-center" 
+          className="btn-pill"
           title={t('refresh')}
-          style={{ display: 'flex', alignItems: 'center', padding: '8px' }}
+          style={{ padding: '0.6rem' }}
         >
           <RefreshCw size={18} />
         </button>
 
         {/* Smart Export Actions */}
-        <button onClick={onExcelExport} className="btn-pill flex-center gap-sm" title={t('exportExcel')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <button onClick={onExcelExport} className="btn-pill" title={t('exportExcel')}>
           <FileSpreadsheet size={18} />
           <span>{lang === 'ar' ? 'تصدير Excel' : 'Excel'}</span>
         </button>
 
-        <button onClick={onPdfPrint} className="btn-pill flex-center gap-sm" title={t('exportPdf')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <button onClick={onPdfPrint} className="btn-pill" title={t('exportPdf')}>
           <Printer size={18} />
           <span>{lang === 'ar' ? 'تصدير PDF' : 'PDF'}</span>
         </button>

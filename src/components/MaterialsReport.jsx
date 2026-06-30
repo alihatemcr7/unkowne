@@ -160,80 +160,78 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+      style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem' }}
     >
       
       {/* 1. Marble Summary Cards */}
-      <div className="marble-summary-cards">
         
         {/* White Alabaster */}
-        <motion.div variants={itemVariants} className="kpi-card bento-col-4 success">
-          <div className="kpi-details">
-            <span className="kpi-title">{t('marbleWhiteTitle')}</span>
-            <span className="kpi-value tabular-nums glow-cyan" style={{ fontSize: '1.85rem' }}>
-              {totalWhite.toLocaleString()}
-            </span>
+        <motion.div variants={itemVariants} className="glass-panel" style={{ gridColumn: 'span 4', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '4px solid #f8fafc' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: '600' }}>{t('marbleWhiteTitle')}</span>
+            <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+              <Layers size={20} style={{ color: 'var(--muted)' }} />
+            </div>
+          </div>
+          <div className="tabular-nums" style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--fg)', lineHeight: '1' }}>
+            {totalWhite.toLocaleString()}
+          </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>
               {lang === 'ar' 
                 ? `سكيبة: ${Math.floor(totalWhite / 198).toLocaleString()} (السكيبة 198 قطعة) | فرط: ${totalWhite % 198}` 
                 : `Pallets: ${Math.floor(totalWhite / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalWhite % 198}`}
             </div>
-            <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-              {lang === 'ar' ? 'إجمالي القطع البيضاء المطبقة ميدانياً' : 'Total white pieces applied in the field'}
-            </span>
-          </div>
-          <div className="kpi-icon-container" style={{ color: '#ffffff' }}>
-            <Layers size={22} />
-          </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+              {lang === 'ar' ? 'القطع المطبقة ميدانياً' : 'Pieces applied in field'}
+            </div>
         </motion.div>
 
         {/* Brown Alabaster */}
-        <motion.div variants={itemVariants} className="kpi-card bento-col-4 pending">
-          <div className="kpi-details">
-            <span className="kpi-title">{t('marbleBrownTitle')}</span>
-            <span className="kpi-value tabular-nums glow-amber" style={{ fontSize: '1.85rem' }}>
-              {totalBrown.toLocaleString()}
-            </span>
+        <motion.div variants={itemVariants} className="glass-panel" style={{ gridColumn: 'span 4', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '4px solid var(--accent)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: '600' }}>{t('marbleBrownTitle')}</span>
+            <div style={{ padding: '0.5rem', background: 'rgba(168, 85, 247, 0.1)', borderRadius: '12px' }}>
+              <Layers size={20} style={{ color: 'var(--accent)' }} />
+            </div>
+          </div>
+          <div className="tabular-nums" style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--fg)', lineHeight: '1' }}>
+            {totalBrown.toLocaleString()}
+          </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>
               {lang === 'ar' 
                 ? `سكيبة: ${Math.floor(totalBrown / 198).toLocaleString()} (السكيبة 198 قطعة) | فرط: ${totalBrown % 198}` 
                 : `Pallets: ${Math.floor(totalBrown / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${totalBrown % 198}`}
             </div>
-            <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-              {lang === 'ar' ? 'إجمالي القطع الجوزية المطبقة ميدانياً' : 'Total brown pieces applied in the field'}
-            </span>
-          </div>
-          <div className="kpi-icon-container" style={{ color: 'var(--accent)' }}>
-            <Layers size={22} />
-          </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+              {lang === 'ar' ? 'القطع المطبقة ميدانياً' : 'Pieces applied in field'}
+            </div>
         </motion.div>
 
         {/* Combined Grand Total */}
-        <motion.div variants={itemVariants} className="kpi-card bento-col-4 success">
-          <div className="kpi-details">
-            <span className="kpi-title">{t('marbleTotalTitle')}</span>
-            <span className="kpi-value tabular-nums glow-emerald" style={{ fontSize: '1.85rem' }}>
-              {grandTotal.toLocaleString()}
-            </span>
+        <motion.div variants={itemVariants} className="glass-panel" style={{ gridColumn: 'span 4', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '4px solid var(--success)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: '600' }}>{t('marbleTotalTitle')}</span>
+            <div style={{ padding: '0.5rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px' }}>
+              <Layers size={20} style={{ color: 'var(--success)' }} />
+            </div>
+          </div>
+          <div className="tabular-nums" style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--fg)', lineHeight: '1' }}>
+            {grandTotal.toLocaleString()}
+          </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>
               {lang === 'ar' 
                 ? `سكيبة: ${Math.floor(grandTotal / 198).toLocaleString()} (السكيبة 198 قطعة) | فرط: ${grandTotal % 198}` 
                 : `Pallets: ${Math.floor(grandTotal / 198).toLocaleString()} (198 pcs/pallet) | Loose: ${grandTotal % 198}`}
             </div>
-            <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-              {lang === 'ar' ? 'المجموع الكلي لقطع المرمر المطبقة' : 'Grand total of applied marble pieces'}
-            </span>
-          </div>
-          <div className="kpi-icon-container" style={{ color: 'var(--success)' }}>
-            <Layers size={22} />
-          </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+              {lang === 'ar' ? 'المجموع الكلي' : 'Grand total'}
+            </div>
         </motion.div>
 
-      </div>
-
       {/* 2. Detailed Distribution Table */}
-      <motion.div variants={itemVariants} className="glass-panel">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem', width: '100%' }}>
+      <motion.div variants={itemVariants} className="glass-panel" style={{ gridColumn: 'span 12', padding: '0', overflowX: 'auto' }}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', width: '100%' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Layers size={20} style={{ color: 'var(--accent)' }} />
               {t('tableMaterialsTitle')}
@@ -254,8 +252,9 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
               </button>
             </div>
           </div>
+        </div>
 
-          <div className="table-responsive" style={{ width: '100%' }}>
+        <div className="table-responsive" style={{ width: '100%' }}>
             <table className="project-table" style={{ direction: lang === 'ar' ? 'rtl' : 'ltr' }}>
               <thead>
                 <tr>

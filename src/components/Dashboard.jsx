@@ -211,86 +211,131 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
       <DashboardBento kpis={kpis} tasks={tasks} lang={lang} />
       
       {/* 1. KPI Cards */}
-      <div className="cyber-kpi-row">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gap: '1.5rem',
+        marginBottom: '2.5rem'
+      }}>
       {/* Card 1: Overall progress */}
-      <motion.div variants={itemVariants} className="kpi-card">
-        <div className="kpi-details">
-          <span className="kpi-title">{t('kpiProgressTitle')}</span>
-          <span className="kpi-value tabular-nums">{kpis.overall_progress_percent}%</span>
-          <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
-            <div 
-              className="progress-bar-fill success" 
-              style={{ width: `${kpis.overall_progress_percent}%` }}
-            ></div>
+      <motion.div variants={itemVariants} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        padding: '1.5rem',
+        borderRadius: '1.5rem',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ padding: '0.75rem', background: 'var(--bg-1)', borderRadius: '1rem', border: '1px solid var(--border-soft)', color: 'var(--success)' }}>
+            <Award size={20} />
           </div>
-          <span className="kpi-subtext" style={{ marginTop: '4px' }}>{t('kpiProgressSubtext')}</span>
+          <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--fg-2)' }}>{t('kpiProgressTitle')}</span>
         </div>
-        <div className="kpi-icon-container" style={{ color: 'var(--success)' }}>
-          <Award size={22} />
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '2rem', fontWeight: 800, color: 'var(--fg)' }}>{kpis.overall_progress_percent}%</span>
         </div>
+        <div style={{ height: '6px', width: '100%', background: 'var(--bg-1)', borderRadius: '999px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', background: 'var(--success)', width: `${kpis.overall_progress_percent}%`, borderRadius: '999px' }} />
+        </div>
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)', fontWeight: 500 }}>{t('kpiProgressSubtext')}</span>
       </motion.div>
 
       {/* Card 2: Marble pieces */}
-      <motion.div variants={itemVariants} className="kpi-card">
-        <div className="kpi-details">
-          <span className="kpi-title">{t('kpiMarbleTitle')}</span>
-          <span className="kpi-value tabular-nums">
+      <motion.div variants={itemVariants} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        padding: '1.5rem',
+        borderRadius: '1.5rem',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ padding: '0.75rem', background: 'var(--bg-1)', borderRadius: '1rem', border: '1px solid var(--border-soft)', color: 'var(--accent)' }}>
+            <Layers size={20} />
+          </div>
+          <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--fg-2)' }}>{t('kpiMarbleTitle')}</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '2rem', fontWeight: 800, color: 'var(--fg)' }}>
             {kpis.applied_marble_pieces.toLocaleString()}
           </span>
-          <span className="kpi-subtext" style={{ marginTop: '8px' }}>
-            {t('kpiMarbleSubtext')}
-          </span>
         </div>
-        <div className="kpi-icon-container">
-          <Layers size={22} />
-        </div>
+        <div style={{ height: '6px', width: '100%' }}></div> {/* Spacer to match height */}
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)', fontWeight: 500, marginTop: 'auto' }}>{t('kpiMarbleSubtext')}</span>
       </motion.div>
 
       {/* Card 3: Skylight progress */}
-      <motion.div variants={itemVariants} className="kpi-card">
-        <div className="kpi-details">
-          <span className="kpi-title">{t('kpiSkylightTitle')}</span>
-          <span className="kpi-value tabular-nums">{kpis.skylight_progress_percent}%</span>
-          <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
-            <div 
-              className="progress-bar-fill success" 
-              style={{ width: '100%' }}
-            ></div>
+      <motion.div variants={itemVariants} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        padding: '1.5rem',
+        borderRadius: '1.5rem',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ padding: '0.75rem', background: 'var(--bg-1)', borderRadius: '1rem', border: '1px solid var(--border-soft)', color: 'var(--success)' }}>
+            <CheckCircle2 size={20} />
           </div>
-          <span className="kpi-subtext" style={{ marginTop: '4px' }}>{t('kpiSkylightSubtext')}</span>
+          <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--fg-2)' }}>{t('kpiSkylightTitle')}</span>
         </div>
-        <div className="kpi-icon-container" style={{ color: 'var(--success)' }}>
-          <CheckCircle2 size={22} />
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '2rem', fontWeight: 800, color: 'var(--fg)' }}>{kpis.skylight_progress_percent}%</span>
         </div>
+        <div style={{ height: '6px', width: '100%', background: 'var(--bg-1)', borderRadius: '999px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', background: 'var(--success)', width: `100%`, borderRadius: '999px' }} />
+        </div>
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)', fontWeight: 500 }}>{t('kpiSkylightSubtext')}</span>
       </motion.div>
 
       {/* Card 4: Nazalat progress */}
-      <motion.div variants={itemVariants} className="kpi-card">
-        <div className="kpi-details">
-          <span className="kpi-title">{t('kpiNazalatTitle')}</span>
-          <span className="kpi-value tabular-nums">{kpis.nazalat_progress_percent}%</span>
-          <div className="progress-bar-container" style={{ marginTop: '8px', width: '150px' }}>
-            <div 
-              className="progress-bar-fill warning" 
-              style={{ width: `${kpis.nazalat_progress_percent}%` }}
-            ></div>
+      <motion.div variants={itemVariants} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        padding: '1.5rem',
+        borderRadius: '1.5rem',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ padding: '0.75rem', background: 'var(--bg-1)', borderRadius: '1rem', border: '1px solid var(--border-soft)', color: '#f59e0b' }}>
+            <Clock size={20} />
           </div>
-          <span className="kpi-subtext" style={{ marginTop: '4px' }}>
-            {t('kpiNazalatSubtext')
-              .replace('{completed}', kpis.nazalat_completed)
-              .replace('{total}', kpis.nazalat_total)}
-          </span>
+          <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--fg-2)' }}>{t('kpiNazalatTitle')}</span>
         </div>
-        <div className="kpi-icon-container" style={{ color: 'var(--warn)' }}>
-          <Clock size={22} />
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '2rem', fontWeight: 800, color: 'var(--fg)' }}>{kpis.nazalat_progress_percent}%</span>
         </div>
+        <div style={{ height: '6px', width: '100%', background: 'var(--bg-1)', borderRadius: '999px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', background: '#f59e0b', width: `${kpis.nazalat_progress_percent}%`, borderRadius: '999px' }} />
+        </div>
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)', fontWeight: 500 }}>
+          {t('kpiNazalatSubtext').replace('{completed}', kpis.nazalat_completed).replace('{total}', kpis.nazalat_total)}
+        </span>
       </motion.div>
-
       </div>
 
       {/* 2. Charts Visual Section */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
       {/* Chart 1: Progress Comparison */}
-      <motion.div variants={itemVariants} className="glass-panel cyber-main-chart">
+      <motion.div variants={itemVariants} style={{
+        background: 'var(--surface)',
+        borderRadius: '2.5rem',
+        border: '1px solid var(--border)',
+        boxShadow: '0 20px 40px -15px rgba(0,0,0,0.03)',
+        padding: '2rem',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
         <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
           {t('chartProgressTitle')}
@@ -302,22 +347,6 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
               data={chartData}
               margin={{ top: 10, right: 15, left: 15, bottom: 10 }}
             >
-              <defs>
-                <linearGradient id="progressGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#0d9488" stopOpacity={0.45}/>
-                  <stop offset="100%" stopColor="#38bdf8" stopOpacity={0.95}/>
-                </linearGradient>
-                <linearGradient id="successGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#0d9488" stopOpacity={0.65}/>
-                  <stop offset="100%" stopColor="#38bdf8" stopOpacity={1}/>
-                </linearGradient>
-                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.4" floodColor="#38bdf8" />
-                </filter>
-                <filter id="successShadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="1" dy="1" stdDeviation="3" floodOpacity="0.6" floodColor="#38bdf8" />
-                </filter>
-              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" horizontal={false} />
               <XAxis 
                 type="number"
@@ -355,8 +384,8 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                   return (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={is100 ? 'url(#successGradient)' : 'url(#progressGradient)'} 
-                      filter={is100 ? 'url(#successShadow)' : 'url(#shadow)'}
+                      fill={is100 ? 'var(--success, #10b981)' : 'var(--accent, #10b981)'} 
+                      opacity={is100 ? 1 : 0.7}
                     />
                   );
                 })}
@@ -367,7 +396,16 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
       </motion.div>
 
       {/* Chart 2: Marble Status Distribution */}
-      <motion.div variants={itemVariants} className="glass-panel" style={{ height: '420px', display: 'flex', flexDirection: 'column' }}>
+      <motion.div variants={itemVariants} style={{
+        background: 'var(--surface)',
+        borderRadius: '2.5rem',
+        border: '1px solid var(--border)',
+        boxShadow: '0 20px 40px -15px rgba(0,0,0,0.03)',
+        padding: '2rem',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '420px'
+      }}>
         <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Building2 size={18} style={{ color: 'var(--accent)' }} />
           {t('chartMarbleTitle')}
@@ -375,19 +413,6 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
         <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', minHeight: 0 }}>
           <div style={{ width: '160px', height: '160px', minWidth: 0, position: 'relative' }}>
             <PieChart width={160} height={160}>
-              <defs>
-                <linearGradient id="whiteMarbleGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#ffffff" stopOpacity={0.95}/>
-                  <stop offset="100%" stopColor="#cbd5e1" stopOpacity={0.8}/>
-                </linearGradient>
-                <linearGradient id="brownMarbleGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#fb923c" stopOpacity={0.95}/>
-                  <stop offset="100%" stopColor="#78350f" stopOpacity={0.85}/>
-                </linearGradient>
-                <filter id="pieShadow" x="-25%" y="-25%" width="150%" height="150%">
-                  <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.3" floodColor="#000000" />
-                </filter>
-              </defs>
               <Pie
                 data={marbleChartData}
                 cx="50%"
@@ -396,12 +421,12 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                 outerRadius={70}
                 paddingAngle={4}
                 dataKey="value"
+                stroke="none"
               >
                 {marbleChartData.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
-                    fill={index === 0 ? 'url(#whiteMarbleGrad)' : 'url(#brownMarbleGrad)'} 
-                    filter="url(#pieShadow)"
+                    fill={index === 0 ? 'var(--bg-2, #cbd5e1)' : 'var(--accent, #10b981)'} 
                   />
                 ))}
               </Pie>
@@ -430,25 +455,32 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
                     height: '10px', 
                     borderRadius: '3px', 
                     background: index === 0 
-                      ? 'linear-gradient(135deg, #ffffff, #cbd5e1)' 
-                      : 'linear-gradient(135deg, #fb923c, #78350f)', 
+                      ? 'var(--bg-2, #cbd5e1)' 
+                      : 'var(--accent, #10b981)', 
                     border: '1px solid var(--border)' 
                   }}></div>
                   <span style={{ color: 'var(--muted)' }}>{entry.name}</span>
                 </div>
-                <span className="tabular-nums" style={{ fontWeight: '700' }}>{entry.value.toLocaleString()}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '700' }}>{entry.value.toLocaleString()}</span>
               </div>
             ))}
             <div style={{ borderTop: '1px solid var(--border)', marginTop: '0.25rem', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}>
               <span>{t('chartTotalApplied')}</span>
-              <span className="tabular-nums" style={{ color: 'var(--accent)' }}>{kpis.applied_marble_pieces.toLocaleString()}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}>{kpis.applied_marble_pieces.toLocaleString()}</span>
             </div>
           </div>
         </div>
       </motion.div>
+      </div>
 
       {/* 3. General Project Progress Table */}
-      <motion.div variants={itemVariants} className="glass-panel">
+      <motion.div variants={itemVariants} style={{
+        background: 'var(--surface)',
+        borderRadius: '2.5rem',
+        border: '1px solid var(--border)',
+        boxShadow: '0 20px 40px -15px rgba(0,0,0,0.03)',
+        padding: '2rem'
+      }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <h3 style={{ fontSize: '1.2rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
             <Grid size={20} style={{ color: 'var(--accent)' }} />

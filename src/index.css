@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
    DESIGN SYSTEM Ã¢â‚¬â€ Precision Neutral
@@ -171,9 +171,9 @@ html[dir="ltr"] textarea {
   font-family: var(--font-english);
 }
 
-/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-   APP CONTAINER Ã¢â‚¬â€ Background with Nebula Orbs
-   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+   APP CONTAINER — Background with Nebula Orbs
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .app-container {
   display: flex;
   min-height: 100vh;
@@ -264,12 +264,10 @@ html[dir="ltr"] textarea {
    Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 .glass-panel {
   background: var(--surface);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem;
-  box-shadow: var(--elev-glass);
+  border-radius: 2.5rem;
+  padding: 2rem;
+  box-shadow: 0 20px 40px -15px rgba(0,0,0,0.03);
   transition: var(--transition-smooth);
   width: 100%;
   max-width: 100%;
@@ -280,14 +278,7 @@ html[dir="ltr"] textarea {
 
 /* Subtle emerald accent line at top Ã¢â‚¬â€ single accent lock */
 .glass-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 16px;
-  right: 16px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-border), transparent);
-  border-radius: 1px;
+  display: none;
 }
 
 .glass-panel:hover {
@@ -296,11 +287,9 @@ html[dir="ltr"] textarea {
 }
 
 [data-theme="dark"] .glass-panel {
-  background: linear-gradient(145deg, rgba(24,24,27,0.75) 0%, rgba(24,24,27,0.55) 100%);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: var(--elev-glass);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px -15px rgba(0,0,0,0.25);
 }
 
 [data-theme="dark"] .glass-panel:hover {
@@ -831,10 +820,8 @@ html[dir="ltr"] textarea {
 .sidebar {
   width: 280px;
   background: var(--surface);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
   border-left: 1px solid var(--border);
-  border-right: 1px solid rgba(255, 255, 255, 0.15); /* Reflective edge */
+  border-right: 1px solid var(--border);
   position: fixed;
   top: 0;
   right: 0;
@@ -843,20 +830,12 @@ html[dir="ltr"] textarea {
   display: flex;
   flex-direction: column;
   transition: var(--transition-smooth);
-  box-shadow: var(--elev-glass);
 }
 
 [data-theme="dark"] .sidebar {
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.6) 0%,
-    rgba(15, 23, 42, 0.35) 100%
-  );
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
-  border-right: 1px solid rgba(255, 255, 255, 0.12); /* Reflective edge */
-  box-shadow: -15px 0 35px rgba(0, 0, 0, 0.4);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
 }
 
 .sidebar.collapsed {
@@ -868,7 +847,7 @@ html[dir="ltr"] textarea {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
   min-width: 0;
 }
@@ -876,22 +855,20 @@ html[dir="ltr"] textarea {
 .sidebar-logo {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, var(--accent), #f97316);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 1.5rem;
-  box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);
+  color: var(--accent);
 }
 
 .sidebar-title {
-  font-size: 0.82rem;
-  font-weight: 800;
+  font-size: 0.85rem;
+  font-weight: 700;
   color: var(--fg);
   line-height: 1.3;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -901,20 +878,16 @@ html[dir="ltr"] textarea {
   transition: opacity var(--motion-fast);
 }
 
-[data-theme="dark"] .sidebar-title {
-  text-shadow: 0 0 10px rgba(255,255,255,0.2); /* Etched Glow */
-}
-
 .sidebar.collapsed .sidebar-title {
   opacity: 0;
   pointer-events: none;
 }
 
 .sidebar-nav {
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-6) 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 4px;
   flex: 1;
 }
 
@@ -923,75 +896,45 @@ html[dir="ltr"] textarea {
   align-items: center;
   gap: var(--space-3);
   padding: 12px var(--space-4);
-  color: var(--fg-2);
+  color: var(--muted);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   border-radius: var(--radius-sm);
-  transition: var(--transition-smooth);
-  margin: 4px var(--space-4);
+  transition: all 0.2s ease;
+  margin: 0 var(--space-3);
+  width: calc(100% - calc(var(--space-3) * 2));
+  max-width: calc(100% - calc(var(--space-3) * 2));
+  box-sizing: border-box;
   font-size: var(--text-sm);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
   border: 1px solid transparent;
-  position: relative;
-  overflow: hidden;
-}
-
-[data-theme="dark"] .nav-item {
-  text-shadow: 0 0 8px rgba(255,255,255,0.15); /* Etched Glow */
-}
-
-.nav-item svg {
-  text-shadow: 0 0 5px rgba(0,0,0,0.5);
-}
-
-.nav-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--surface-warm);
-  opacity: 0;
-  transition: opacity var(--transition-smooth);
-  z-index: -1;
 }
 
 .nav-item:hover {
   color: var(--fg);
-  transform: translateX(-4px);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-html[dir="ltr"] .nav-item:hover {
-  transform: translateX(4px);
-}
-
-.nav-item:hover::before {
-  opacity: 1;
+[data-theme="light"] .nav-item:hover {
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .nav-item.active {
-  color: var(--accent-on);
-  background: var(--accent);
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  color: var(--accent);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  font-weight: 600;
 }
 
 [data-theme="dark"] .nav-item.active {
-  background: rgba(245, 158, 11, 0.18);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  box-shadow: 
-    0 0 15px rgba(245, 158, 11, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.nav-item.active:hover {
-  transform: none;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .nav-label {
   font-size: var(--text-base);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar.collapsed .nav-label {
@@ -1117,9 +1060,43 @@ html[dir="ltr"] .nav-item:hover {
 }
 
 [data-theme="dark"] .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.1);
-  border-top-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Bento 2.0 Action Pills (Header Buttons) */
+.btn-pill {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-soft);
+  color: var(--fg);
+  padding: 0.6rem 1.2rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .btn-pill {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.btn-pill:hover {
+  background: var(--border);
+  transform: translateY(-1px);
+  border-color: var(--border);
+}
+
+.btn-pill:active {
+  transform: translateY(1px);
 }
 
 /* Forms & Inputs */
@@ -1936,19 +1913,16 @@ html[dir="ltr"] .user-profile {
 .progress-bar-fill {
   height: 100%;
   border-radius: 4px;
-  background: linear-gradient(90deg, #f97316, var(--accent));
+  background: var(--accent);
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
 }
 
 .progress-bar-fill.success {
-  background: linear-gradient(90deg, #10b981, #34d399);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  background: var(--success);
 }
 
 .progress-bar-fill.warning {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  background: var(--warn);
 }
 
 /* ==========================================================================
@@ -3426,36 +3400,7 @@ html[dir="ltr"] .user-profile { padding: 6px 6px 6px 14px; }
   border: 1px solid rgba(245, 158, 11, 0.25);
 }
 
-.progress-bar-container {
-  width: 100%;
-  height: 6px;
-  background:  "rgba(5,150,105,$($args[0].Groups[1]))" ;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-
-[data-theme="dark"] .progress-bar-container {
-  background:  "rgba(5,150,105,$($args[0].Groups[1]))" ;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #7c3aed, #6366f1);
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px  "rgba(5,150,105,$($args[0].Groups[1]))" ;
-}
-
-.progress-bar-fill.success {
-  background: linear-gradient(90deg, #10b981, #34d399);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-}
-
-.progress-bar-fill.warning {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
-}
+/* Legacy progress bars removed */
 
 /* Legacy design blocks removed Ã¢â‚¬â€ Zinc/Emerald system is canonical */
 

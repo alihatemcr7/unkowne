@@ -755,69 +755,77 @@ export default function MaterialsConsumption({ user, t, lang }) {
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      <div className="screen-only-view">
-        {/* Header controls */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Sparkles size={24} style={{ color: 'var(--accent)' }} />
-            {t('headerMaterialsConsumptionTitle')}
-          </h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '4px' }}>
-            {t('headerMaterialsConsumptionSubtitle')}
-          </p>
-        </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem', width: '100%' }}>
+      <div className="screen-only-view" style={{ gridColumn: 'span 12', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        
+        {/* Header controls (Bento Card) */}
+        <motion.div 
+          className="glass-panel"
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.5rem' }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+              <Sparkles size={24} style={{ color: 'var(--accent)' }} />
+              {t('headerMaterialsConsumptionTitle')}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '4px', marginBottom: 0 }}>
+              {t('headerMaterialsConsumptionSubtitle')}
+            </p>
+          </div>
 
-        <div>
-          {viewMode === 'history' ? (
-            <button 
-              className="btn btn-primary"
-              onClick={() => {
-                if (reports && reports.length > 0) {
-                  handleClone(reports[0]);
-                } else {
-                  setFormData(INITIAL_FORM_STATE);
+          <div>
+            {viewMode === 'history' ? (
+              <button 
+                className="btn btn-primary"
+                onClick={() => {
+                  if (reports && reports.length > 0) {
+                    handleClone(reports[0]);
+                  } else {
+                    setFormData(INITIAL_FORM_STATE);
+                    setIsEditingId(null);
+                    setIsCloned(false);
+                    setViewMode('form');
+                  }
+                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem' }}
+              >
+                <Plus size={18} />
+                {t('addNewReport')}
+              </button>
+            ) : (
+              <button 
+                className="btn btn-secondary"
+                onClick={() => {
                   setIsEditingId(null);
                   setIsCloned(false);
-                  setViewMode('form');
-                }
-              }}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-            >
-              <Plus size={18} />
-              {t('addNewReport')}
-            </button>
-          ) : (
-            <button 
-              className="btn btn-secondary"
-              onClick={() => {
-                setIsEditingId(null);
-                setIsCloned(false);
-                setViewMode('history');
-              }}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-            >
-              {lang === 'ar' ? <ArrowRight size={18} /> : <ArrowLeft size={18} />}
-              {t('backToHistory')}
-            </button>
-          )}
-        </div>
-      </div>
+                  setViewMode('history');
+                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem' }}
+              >
+                {lang === 'ar' ? <ArrowRight size={18} /> : <ArrowLeft size={18} />}
+                {t('backToHistory')}
+              </button>
+            )}
+          </div>
+        </motion.div>
 
-      <AnimatePresence mode="wait">
-        {viewMode === 'history' ? (
-          <motion.div 
-            key="history"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="glass-panel"
-            style={{ width: '100%' }}
-          >
-            <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '1.2rem' }}>
-              {t('reportHistory')}
-            </h3>
+        <AnimatePresence mode="wait">
+          {viewMode === 'history' ? (
+            <motion.div 
+              key="history"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              className="glass-panel"
+              style={{ width: '100%', padding: '0', overflow: 'hidden' }}
+            >
+              <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)' }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: '700', margin: 0 }}>
+                  {t('reportHistory')}
+                </h3>
+              </div>
 
             {loading && reports.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)' }}>
@@ -1094,7 +1102,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             onSubmit={handleSubmit}
-            style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}
+            style={{ gridColumn: 'span 12', display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}
           >
             {/* Auto-save draft notifications */}
             {hasRestoredDraft && (

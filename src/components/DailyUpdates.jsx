@@ -460,7 +460,7 @@ export default function DailyUpdates({ user, t, lang }) {
                       : 'rgba(255, 255, 255, 0.04)',
                     backdropFilter: 'blur(10px)',
                     border: isMyMessage ? '1px solid rgba(245, 158, 11, 0.25)' : '1px solid var(--border-soft)',
-                    borderRadius: isMyMessage ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
+                    borderRadius: isMyMessage ? '1.5rem 1.5rem 0.25rem 1.5rem' : '0.25rem 1.5rem 1.5rem 1.5rem',
                     padding: '0.75rem 1rem',
                     boxShadow: 'var(--elev-glass)',
                     display: 'flex',
@@ -587,7 +587,7 @@ export default function DailyUpdates({ user, t, lang }) {
   };
 
   return (
-    <div className="glass-panel daily-updates-panel" style={{ height: 'calc(100dvh - 200px)', minHeight: '400px', maxHeight: '800px', display: 'flex', flexDirection: 'column', gap: '1rem', padding: 'var(--space-5)' }}>
+    <div className="glass-panel daily-updates-panel" style={{ height: 'calc(100dvh - 200px)', minHeight: '500px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
       {/* Header section */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-soft)', paddingBottom: '0.75rem' }}>
@@ -649,7 +649,7 @@ export default function DailyUpdates({ user, t, lang }) {
                   className="glass-panel" 
                   style={{ 
                     padding: '0.75rem 1rem', 
-                    borderRadius: i % 2 === 0 ? '16px 4px 16px 16px' : '4px 16px 16px 16px',
+                    borderRadius: i % 2 === 0 ? '1.5rem 0.25rem 1.5rem 1.5rem' : '0.25rem 1.5rem 1.5rem 1.5rem',
                     width: '100%',
                     display: 'flex',
                     flexDirection: 'column',

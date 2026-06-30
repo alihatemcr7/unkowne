@@ -171,15 +171,20 @@ export default function UsersManagement({ currentUser, t, lang }) {
   const viewerCount = users.filter(u => u.role === 'viewer').length;
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem', width: '100%' }}>
       {/* Top Banner/Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <motion.div 
+        className="glass-panel"
+        style={{ gridColumn: 'span 12', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.5rem' }}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
             <Users size={24} style={{ color: 'var(--accent)' }} />
             {lang === 'ar' ? 'إدارة حسابات المهندسين والمنصة' : 'Engineers & Platform Accounts Management'}
           </h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '4px', marginBottom: 0 }}>
             {lang === 'ar' ? 'إضافة وتعديل وحذف حسابات المهندسين والإدارة العليا للموقع من هنا.' : 'Add, edit, and delete engineer and senior management accounts from here.'}
           </p>
         </div>
@@ -188,55 +193,84 @@ export default function UsersManagement({ currentUser, t, lang }) {
           <button 
             className="btn btn-primary"
             onClick={handleOpenAdd}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem' }}
           >
             <Plus size={18} />
             {lang === 'ar' ? 'إنشاء حساب جديد' : 'Create New Account'}
           </button>
         )}
-      </div>
+      </motion.div>
 
       {/* KPI Cards for User Management */}
       {formMode === 'list' && (
-        <div className="kpi-container" style={{ marginBottom: '1.5rem' }}>
-          <div className="kpi-card">
-            <div className="kpi-details">
-              <span className="kpi-title">{lang === 'ar' ? 'إجمالي الحسابات' : 'Total Accounts'}</span>
-              <span className="kpi-value">{totalCount}</span>
-              <span className="kpi-subtext">{lang === 'ar' ? 'الحسابات النشطة بالمنصة' : 'Active accounts in the platform'}</span>
+        <>
+          <motion.div 
+            className="glass-panel" 
+            style={{ gridColumn: 'span 4', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '4px solid var(--fg)' }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: '600' }}>{lang === 'ar' ? 'إجمالي الحسابات' : 'Total Accounts'}</span>
+              <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                <Users size={20} style={{ color: 'var(--fg)' }} />
+              </div>
             </div>
-            <div className="kpi-icon-container">
-              <Users size={24} />
+            <div className="tabular-nums" style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--fg)', lineHeight: '1' }}>
+              {totalCount}
             </div>
-          </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+              {lang === 'ar' ? 'الحسابات النشطة بالمنصة' : 'Active accounts in the platform'}
+            </div>
+          </motion.div>
 
-          <div className="kpi-card success">
-            <div className="kpi-details">
-              <span className="kpi-title">{lang === 'ar' ? 'المهندسون' : 'Site Engineers'}</span>
-              <span className="kpi-value">{adminCount}</span>
-              <span className="kpi-subtext">{lang === 'ar' ? 'صلاحيات تعديل كاملة للموقع' : 'Full edit permissions for the site'}</span>
+          <motion.div 
+            className="glass-panel" 
+            style={{ gridColumn: 'span 4', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '4px solid var(--success)' }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: '600' }}>{lang === 'ar' ? 'المهندسون' : 'Site Engineers'}</span>
+              <div style={{ padding: '0.5rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px' }}>
+                <Shield size={20} style={{ color: 'var(--success)' }} />
+              </div>
             </div>
-            <div className="kpi-icon-container">
-              <Shield size={24} />
+            <div className="tabular-nums" style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--fg)', lineHeight: '1' }}>
+              {adminCount}
             </div>
-          </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+              {lang === 'ar' ? 'صلاحيات تعديل كاملة للموقع' : 'Full edit permissions for the site'}
+            </div>
+          </motion.div>
 
-          <div className="kpi-card pending">
-            <div className="kpi-details">
-              <span className="kpi-title">{lang === 'ar' ? 'الإدارة العليا' : 'Senior Management'}</span>
-              <span className="kpi-value">{viewerCount}</span>
-              <span className="kpi-subtext">{lang === 'ar' ? 'صلاحيات قراءة فقط' : 'Read-only access permissions'}</span>
+          <motion.div 
+            className="glass-panel" 
+            style={{ gridColumn: 'span 4', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '4px solid var(--accent)' }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: '600' }}>{lang === 'ar' ? 'الإدارة العليا' : 'Senior Management'}</span>
+              <div style={{ padding: '0.5rem', background: 'rgba(168, 85, 247, 0.1)', borderRadius: '12px' }}>
+                <ShieldCheck size={20} style={{ color: 'var(--accent)' }} />
+              </div>
             </div>
-            <div className="kpi-icon-container">
-              <ShieldCheck size={24} />
+            <div className="tabular-nums" style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--fg)', lineHeight: '1' }}>
+              {viewerCount}
             </div>
-          </div>
-        </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+              {lang === 'ar' ? 'صلاحيات قراءة فقط' : 'Read-only access permissions'}
+            </div>
+          </motion.div>
+        </>
       )}
 
       {/* Notifications */}
       {error && (
-        <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--color-danger)', background: 'rgba(239, 68, 68, 0.05)', padding: '0.75rem 1rem', marginBottom: '1rem' }}>
+        <div className="glass-panel" style={{ gridColumn: 'span 12', display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--color-danger)', background: 'rgba(239, 68, 68, 0.05)', padding: '0.75rem 1rem' }}>
           <AlertCircle size={16} style={{ color: 'var(--color-danger)' }} />
           <span style={{ fontSize: '0.85rem', color: 'var(--color-danger)', fontWeight: '600' }}>
             {error}
@@ -245,7 +279,7 @@ export default function UsersManagement({ currentUser, t, lang }) {
       )}
 
       {success && (
-        <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--success)', background: 'rgba(16, 185, 129, 0.05)', padding: '0.75rem 1rem', marginBottom: '1rem' }}>
+        <div className="glass-panel" style={{ gridColumn: 'span 12', display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--success)', background: 'rgba(16, 185, 129, 0.05)', padding: '0.75rem 1rem' }}>
           <CheckCircle2 size={16} style={{ color: 'var(--success)' }} />
           <span style={{ fontSize: '0.85rem', color: 'var(--success)', fontWeight: '600' }}>
             {success}
@@ -261,10 +295,10 @@ export default function UsersManagement({ currentUser, t, lang }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             className="glass-panel"
-            style={{ width: '100%', padding: '1.5rem' }}
+            style={{ gridColumn: 'span 12', width: '100%', padding: '0', overflowX: 'auto' }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: '700' }}>
+            <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)' }}>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: '700', margin: 0 }}>
                 {lang === 'ar' ? 'قائمة الحسابات المسجلة' : 'Registered Accounts List'}
               </h3>
             </div>
@@ -369,7 +403,7 @@ export default function UsersManagement({ currentUser, t, lang }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             className="glass-panel"
-            style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '2rem' }}
+            style={{ gridColumn: 'span 12', width: '100%', maxWidth: '600px', margin: '0 auto', padding: '2rem' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
               <h3 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--accent)' }}>
