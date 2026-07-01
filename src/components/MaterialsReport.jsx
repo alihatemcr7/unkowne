@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, CheckCircle2, AlertCircle, Save, Printer } from 'lucide-react';
+import { Layers, CheckCircle2, AlertCircle, Save, Printer, Edit2, X } from 'lucide-react';
 
 export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t, lang, translateText }) {
   const [editingId, setEditingId] = useState(null);
@@ -301,10 +301,13 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                 <tr>
                   <th style={{ width: '15%', ...textDirectionStyle }}>{t('colZoneName')}</th>
                   <th style={{ width: '25%', ...textDirectionStyle }}>{t('colTaskNature')}</th>
-                  <th style={{ width: '12%', textAlign: 'center' }}>{t('colWhiteQty')}</th>
-                  <th style={{ width: '12%', textAlign: 'center' }}>{t('colBrownQty')}</th>
-                  <th style={{ width: '12%', textAlign: 'center' }}>{t('colTotal')}</th>
-                  <th style={{ width: '24%', ...textDirectionStyle }}>{t('colFieldStatus')}</th>
+                  <th style={{ width: (user.role === 'admin' || user.role === 'super_admin') ? '10%' : '12%', textAlign: 'center' }}>{t('colWhiteQty')}</th>
+                  <th style={{ width: (user.role === 'admin' || user.role === 'super_admin') ? '10%' : '12%', textAlign: 'center' }}>{t('colBrownQty')}</th>
+                  <th style={{ width: (user.role === 'admin' || user.role === 'super_admin') ? '10%' : '12%', textAlign: 'center' }}>{t('colTotal')}</th>
+                  <th style={{ width: (user.role === 'admin' || user.role === 'super_admin') ? '20%' : '24%', ...textDirectionStyle }}>{t('colFieldStatus')}</th>
+                  {(user.role === 'admin' || user.role === 'super_admin') && (
+                    <th style={{ width: '10%', textAlign: 'center' }}>{t('colActions')}</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -335,6 +338,7 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                           {(zoneWhite + zoneBrown) > 0 ? (zoneWhite + zoneBrown).toLocaleString() : '-'}
                         </td>
                         <td></td>
+                        {(user.role === 'admin' || user.role === 'super_admin') && <td></td>}
                       </tr>
 
                       {/* Zone Detail Rows */}
@@ -345,6 +349,7 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                         const totalDisplay = hasQty ? ((item.white_qty || 0) + (item.brown_qty || 0)).toLocaleString() : '-';
                         
                         const isEditing = editingId === item.id;
+                        const showActions = user.role === 'admin' || user.role === 'super_admin';
 
                         return (
                           <tr key={item.id}>
@@ -354,7 +359,16 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                             <td style={{ fontWeight: '500', ...textDirectionStyle }}>
                               {translateText(item.task_name, lang)}
                             </td>
-                            <td className="tabular-nums" style={{ textAlign: 'center' }}>
+                            {/* White Qty Cell */}
+                            <td 
+                              className="tabular-nums" 
+                              style={{ 
+                                textAlign: 'center', 
+                                cursor: (!isEditing && showActions) ? 'pointer' : 'default',
+                                background: (!isEditing && showActions) ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
+                              }}
+                              onClick={() => !isEditing && showActions && handleEditClick(item)}
+                            >
                               {isEditing ? (
                                 <input
                                   type="number"
@@ -363,13 +377,22 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                                   onChange={(e) => setTempWhite(e.target.value)}
                                   disabled={savingId === item.id}
                                   onClick={(e) => e.stopPropagation()}
-                                  style={{ width: '70px', padding: '0.2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--fg)' }}
+                                  style={{ width: '75px', padding: '0.3rem', textAlign: 'center', background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xs)', color: 'var(--fg)', fontSize: '0.9rem' }}
                                 />
                               ) : (
                                 whiteDisplay
                               )}
                             </td>
-                            <td className="tabular-nums" style={{ textAlign: 'center' }}>
+                            {/* Brown Qty Cell */}
+                            <td 
+                              className="tabular-nums" 
+                              style={{ 
+                                textAlign: 'center', 
+                                cursor: (!isEditing && showActions) ? 'pointer' : 'default',
+                                background: (!isEditing && showActions) ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
+                              }}
+                              onClick={() => !isEditing && showActions && handleEditClick(item)}
+                            >
                               {isEditing ? (
                                 <input
                                   type="number"
@@ -378,12 +401,13 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                                   onChange={(e) => setTempBrown(e.target.value)}
                                   disabled={savingId === item.id}
                                   onClick={(e) => e.stopPropagation()}
-                                  style={{ width: '70px', padding: '0.2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--fg)' }}
+                                  style={{ width: '75px', padding: '0.3rem', textAlign: 'center', background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xs)', color: 'var(--fg)', fontSize: '0.9rem' }}
                                 />
                               ) : (
                                 brownDisplay
                               )}
                             </td>
+                            {/* Total Qty Cell */}
                             <td className="tabular-nums" style={{ textAlign: 'center', fontWeight: '600' }}>
                               {isEditing ? (
                                 ((parseInt(tempWhite, 10) || 0) + (parseInt(tempBrown, 10) || 0)).toLocaleString()
@@ -391,34 +415,27 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                                 totalDisplay
                               )}
                             </td>
+                            {/* Field Status Cell */}
                             <td 
                               style={{ 
                                 ...textDirectionStyle, 
-                                cursor: (!isEditing && (user.role === 'admin' || user.role === 'super_admin')) ? 'pointer' : 'default' 
+                                cursor: (!isEditing && showActions) ? 'pointer' : 'default',
+                                background: (!isEditing && showActions) ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
                               }}
-                              onClick={() => !isEditing && (user.role === 'admin' || user.role === 'super_admin') && handleEditClick(item)}
+                              onClick={() => !isEditing && showActions && handleEditClick(item)}
                             >
                               {isEditing ? (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={(e) => e.stopPropagation()}>
-                                  <input
-                                    type="text"
-                                    className="notes-input"
-                                    value={tempStatus}
-                                    onChange={(e) => setTempStatus(e.target.value)}
-                                    placeholder={t('enterFieldStatus')}
-                                    disabled={savingId === item.id}
-                                    style={{ borderBottom: '1px solid var(--border)', background: 'rgba(0,0,0,0.1)', fontSize: '0.85rem', color: 'var(--fg)' }}
-                                    autoFocus
-                                  />
-                                  <button
-                                    onClick={() => handleSaveClick(item.id)}
-                                    className="btn btn-primary"
-                                    style={{ padding: '0.3rem', borderRadius: '4px' }}
-                                    disabled={savingId === item.id}
-                                  >
-                                    <Save size={14} />
-                                  </button>
-                                </div>
+                                <input
+                                  type="text"
+                                  className="notes-input"
+                                  value={tempStatus}
+                                  onChange={(e) => setTempStatus(e.target.value)}
+                                  placeholder={t('enterFieldStatus')}
+                                  disabled={savingId === item.id}
+                                  onClick={(e) => e.stopPropagation()}
+                                  style={{ width: '95%', padding: '0.3rem 0.5rem', background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xs)', color: 'var(--fg)', fontSize: '0.85rem' }}
+                                  autoFocus
+                                />
                               ) : (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
                                   {item.status && (item.status.includes('مكتمل') || item.status.includes('Completed') || item.status.includes('مستقر')) ? (
@@ -430,6 +447,42 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                                 </div>
                               )}
                             </td>
+                            {/* Actions Column */}
+                            {showActions && (
+                              <td style={{ textAlign: 'center' }}>
+                                {isEditing ? (
+                                  <div style={{ display: 'flex', justifyContent: 'center', gap: '0.4rem' }} onClick={(e) => e.stopPropagation()}>
+                                    <button
+                                      onClick={() => handleSaveClick(item.id)}
+                                      className="btn btn-primary"
+                                      style={{ padding: '0.35rem', borderRadius: 'var(--radius-xs)', background: 'var(--success)', borderColor: 'var(--success)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                                      title={lang === 'ar' ? 'حفظ' : 'Save'}
+                                      disabled={savingId === item.id}
+                                    >
+                                      <Save size={14} />
+                                    </button>
+                                    <button
+                                      onClick={() => setEditingId(null)}
+                                      className="btn btn-secondary"
+                                      style={{ padding: '0.35rem', borderRadius: 'var(--radius-xs)', background: 'rgba(220, 38, 38, 0.1)', color: 'var(--danger)', borderColor: 'rgba(220, 38, 38, 0.2)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                                      title={lang === 'ar' ? 'إلغاء' : 'Cancel'}
+                                      disabled={savingId === item.id}
+                                    >
+                                      <X size={14} />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    onClick={() => handleEditClick(item)}
+                                    className="btn btn-secondary"
+                                    style={{ padding: '0.35rem', borderRadius: 'var(--radius-xs)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem', justifyContent: 'center' }}
+                                    title={lang === 'ar' ? 'تعديل' : 'Edit'}
+                                  >
+                                    <Edit2 size={14} />
+                                  </button>
+                                )}
+                              </td>
+                            )}
                           </tr>
                         );
                       })}
@@ -458,6 +511,7 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                       </span>
                     </div>
                   </td>
+                  {(user.role === 'admin' || user.role === 'super_admin') && <td></td>}
                 </tr>
               </tbody>
             </table>
