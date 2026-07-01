@@ -149,10 +149,51 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
 </body>
 </html>`;
 
-    const printWindow = window.open('', '_blank');
-    printWindow.document.open();
-    printWindow.document.write(html);
-    printWindow.document.close();
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      const printFrame = document.createElement('iframe');
+      printFrame.style.position = 'fixed';
+      printFrame.style.top = '-1000px';
+      printFrame.style.left = '-1000px';
+      printFrame.style.width = '1px';
+      printFrame.style.height = '1px';
+      printFrame.style.border = 'none';
+      document.body.appendChild(printFrame);
+
+      const frameDoc = printFrame.contentWindow.document;
+      frameDoc.open();
+      frameDoc.write(html.replace('window.close();', ''));
+      frameDoc.close();
+
+      setTimeout(() => {
+        document.body.removeChild(printFrame);
+      }, 15000);
+    } else {
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+      } else {
+        const printFrame = document.createElement('iframe');
+        printFrame.style.position = 'fixed';
+        printFrame.style.top = '-1000px';
+        printFrame.style.left = '-1000px';
+        printFrame.style.width = '1px';
+        printFrame.style.height = '1px';
+        printFrame.style.border = 'none';
+        document.body.appendChild(printFrame);
+
+        const frameDoc = printFrame.contentWindow.document;
+        frameDoc.open();
+        frameDoc.write(html.replace('window.close();', ''));
+        frameDoc.close();
+
+        setTimeout(() => {
+          document.body.removeChild(printFrame);
+        }, 15000);
+      }
+    }
   };
 
   return (
@@ -306,11 +347,7 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                         const isEditing = editingId === item.id;
 
                         return (
-                          <tr 
-                            key={item.id}
-                            onClick={() => !isEditing && handleEditClick(item)}
-                            style={{ cursor: (user.role === 'admin' || user.role === 'super_admin') ? 'pointer' : 'default' }}
-                          >
+                          <tr key={item.id}>
                             <td style={{ color: 'var(--muted)', fontSize: '0.85rem', ...textDirectionStyle }}>
                               {lang === 'ar' ? item.zone.replace('Zone', 'المنطقة') : item.zone}
                             </td>
@@ -354,7 +391,13 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                                 totalDisplay
                               )}
                             </td>
-                            <td style={textDirectionStyle}>
+                            <td 
+                              style={{ 
+                                ...textDirectionStyle, 
+                                cursor: (!isEditing && (user.role === 'admin' || user.role === 'super_admin')) ? 'pointer' : 'default' 
+                              }}
+                              onClick={() => !isEditing && (user.role === 'admin' || user.role === 'super_admin') && handleEditClick(item)}
+                            >
                               {isEditing ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={(e) => e.stopPropagation()}>
                                   <input
@@ -365,6 +408,7 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
                                     placeholder={t('enterFieldStatus')}
                                     disabled={savingId === item.id}
                                     style={{ borderBottom: '1px solid var(--border)', background: 'rgba(0,0,0,0.1)', fontSize: '0.85rem', color: 'var(--fg)' }}
+                                    autoFocus
                                   />
                                   <button
                                     onClick={() => handleSaveClick(item.id)}

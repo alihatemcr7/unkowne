@@ -195,10 +195,51 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
 </body>
 </html>`;
 
-    const printWindow = window.open('', '_blank');
-    printWindow.document.open();
-    printWindow.document.write(html);
-    printWindow.document.close();
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      const printFrame = document.createElement('iframe');
+      printFrame.style.position = 'fixed';
+      printFrame.style.top = '-1000px';
+      printFrame.style.left = '-1000px';
+      printFrame.style.width = '1px';
+      printFrame.style.height = '1px';
+      printFrame.style.border = 'none';
+      document.body.appendChild(printFrame);
+
+      const frameDoc = printFrame.contentWindow.document;
+      frameDoc.open();
+      frameDoc.write(html.replace('window.close();', ''));
+      frameDoc.close();
+
+      setTimeout(() => {
+        document.body.removeChild(printFrame);
+      }, 15000);
+    } else {
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+      } else {
+        const printFrame = document.createElement('iframe');
+        printFrame.style.position = 'fixed';
+        printFrame.style.top = '-1000px';
+        printFrame.style.left = '-1000px';
+        printFrame.style.width = '1px';
+        printFrame.style.height = '1px';
+        printFrame.style.border = 'none';
+        document.body.appendChild(printFrame);
+
+        const frameDoc = printFrame.contentWindow.document;
+        frameDoc.open();
+        frameDoc.write(html.replace('window.close();', ''));
+        frameDoc.close();
+
+        setTimeout(() => {
+          document.body.removeChild(printFrame);
+        }, 15000);
+      }
+    }
   };
 
   return (
