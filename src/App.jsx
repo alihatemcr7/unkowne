@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Construction, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { exportToExcel, exportToPDF, CONFIG_PDF } from './utils/exportUtils';
@@ -276,28 +276,36 @@ export default function App() {
   const displayIssuedBy = t('issuedBy');
   const displayReportDateLabel = t('reportDate');
 
+  // تعطيل الحركات الثقيلة على الجوال لتحسين الأداء
+  const isMobile = window.innerWidth <= 768;
+  const tabVariants = isMobile
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0.15 } }
+    : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -20 }, transition: { duration: 0.3 } };
+
 
   return (
     <div
       className="app-container"
       style={{ background: 'var(--bg-1)' }}
     >
-      {/* Subtle ambient emerald orb — single accent lock */}
-      <div
-        aria-hidden
-        style={{
-          position: 'fixed',
-          top: '-25vw',
-          right: '-10vw',
-          width: '50vw',
-          height: '50vw',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(5,150,105,0.10) 0%, transparent 68%)',
-          filter: 'blur(60px)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
+      {/* Subtle ambient emerald orb — desktop only (expensive on mobile GPU) */}
+      {window.innerWidth > 768 && (
+        <div
+          aria-hidden
+          style={{
+            position: 'fixed',
+            top: '-25vw',
+            right: '-10vw',
+            width: '50vw',
+            height: '50vw',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(5,150,105,0.10) 0%, transparent 68%)',
+            filter: 'blur(60px)',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+      )}
 
       {/* ── ترويسة التقرير المطبوع — مأخوذة من CONFIG_PDF ── */}
       <div className="print-header">
@@ -387,10 +395,10 @@ export default function App() {
             {activeTab === 'dashboard' && (
               <motion.div
                 key="dashboard"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={tabVariants.initial}
+                animate={tabVariants.animate}
+                exit={tabVariants.exit}
+                transition={tabVariants.transition}
               >
                 <Dashboard 
                   kpis={kpis} 
@@ -409,10 +417,10 @@ export default function App() {
             {activeTab === 'tracking' && (
               <motion.div
                 key="tracking"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={tabVariants.initial}
+                animate={tabVariants.animate}
+                exit={tabVariants.exit}
+                transition={tabVariants.transition}
               >
                 <TrackingLogs 
                   nazalat={nazalat} 
@@ -430,10 +438,10 @@ export default function App() {
             {activeTab === 'marble' && (
               <motion.div
                 key="marble"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={tabVariants.initial}
+                animate={tabVariants.animate}
+                exit={tabVariants.exit}
+                transition={tabVariants.transition}
               >
                 <MaterialsReport 
                   marble={marble}
@@ -450,10 +458,10 @@ export default function App() {
             {activeTab === 'materials-consumption' && (
               <motion.div
                 key="materials-consumption"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={tabVariants.initial}
+                animate={tabVariants.animate}
+                exit={tabVariants.exit}
+                transition={tabVariants.transition}
               >
                 <MaterialsConsumption 
                   user={user}
@@ -466,10 +474,10 @@ export default function App() {
             {activeTab === 'daily-updates' && (
               <motion.div
                 key="daily-updates"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={tabVariants.initial}
+                animate={tabVariants.animate}
+                exit={tabVariants.exit}
+                transition={tabVariants.transition}
               >
                 <DailyUpdates 
                   user={user}
@@ -482,10 +490,10 @@ export default function App() {
             {activeTab === 'users-management' && (
               <motion.div
                 key="users-management"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={tabVariants.initial}
+                animate={tabVariants.animate}
+                exit={tabVariants.exit}
+                transition={tabVariants.transition}
               >
                 <UsersManagement 
                   currentUser={user}

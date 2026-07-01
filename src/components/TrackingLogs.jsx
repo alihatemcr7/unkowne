@@ -558,32 +558,39 @@ export default function TrackingLogs({ nazalat, user, onUpdateNazalaDetails, loa
         </div>
       ) : (
         <motion.div 
-          style={{ direction: lang === 'ar' ? 'rtl' : 'ltr', overflowX: 'auto', borderRadius: '8px', border: '1px solid var(--border)' }}
+          style={{ direction: lang === 'ar' ? 'rtl' : 'ltr', overflowX: 'auto', overflowY: 'auto', maxHeight: '70vh', borderRadius: '8px', border: '1px solid var(--border)' }}
           variants={containerVariants}
           initial="hidden"
           animate="show"
         >
           <table className="custom-table" style={{ width: '100%', minWidth: '1000px', borderCollapse: 'collapse', textAlign: 'center' }}>
-            <thead style={{ backgroundColor: 'var(--bg-3)', borderBottom: '2px solid var(--border)' }}>
+            <thead style={{
+              backgroundColor: 'var(--bg-3)',
+              borderBottom: '2px solid var(--border)',
+              position: 'sticky',
+              top: 0,
+              zIndex: 10,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            }}>
               <tr>
-                <th rowSpan="2" style={{ padding: '0.75rem', borderRight: '1px solid var(--border)' }}>الجناح</th>
-                <th colSpan="4" style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'rgba(255,255,255,0.05)' }}>الابيض</th>
+                <th rowSpan="2" style={{ padding: '0.75rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)', position: 'sticky', top: 0 }}>الجناح</th>
+                <th colSpan="4" style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)' }}>الابيض</th>
                 <th colSpan="4" style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'rgba(139, 69, 19, 0.1)' }}>الجوزي</th>
-                <th rowSpan="2" style={{ padding: '0.75rem', borderRight: '1px solid var(--border)' }}>استحقاق الخلفة</th>
-                <th rowSpan="2" style={{ padding: '0.75rem', borderRight: '1px solid var(--border)' }}>الحالة</th>
-                {isAdmin && <th rowSpan="2" style={{ padding: '0.75rem' }}>إجراء</th>}
+                <th rowSpan="2" style={{ padding: '0.75rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)', position: 'sticky', top: 0 }}>استحقاق الخلفة</th>
+                <th rowSpan="2" style={{ padding: '0.75rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)', position: 'sticky', top: 0 }}>الحالة</th>
+                {isAdmin && <th rowSpan="2" style={{ padding: '0.75rem', backgroundColor: 'var(--bg-3)', position: 'sticky', top: 0 }}>إجراء</th>}
               </tr>
               <tr style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>
                 {/* White Columns */}
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)' }}>المؤشر</th>
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', color: 'var(--success)' }}>تأشير اضافي اخضر</th>
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)' }}>التطبيك</th>
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)' }}>التاريخ</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)' }}>المؤشر</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)', color: 'var(--success)' }}>تأشير اضافي اخضر</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)' }}>التطبيك</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'var(--bg-3)' }}>التاريخ</th>
                 {/* Brown Columns */}
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)' }}>المؤشر</th>
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', color: 'var(--success)' }}>تأشير اضافي اخضر</th>
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)' }}>التطبيك</th>
-                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)' }}>التاريخ</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'rgba(139, 69, 19, 0.1)' }}>المؤشر</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'rgba(139, 69, 19, 0.1)', color: 'var(--success)' }}>تأشير اضافي اخضر</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'rgba(139, 69, 19, 0.1)' }}>التطبيك</th>
+                <th style={{ padding: '0.5rem', borderRight: '1px solid var(--border)', backgroundColor: 'rgba(139, 69, 19, 0.1)' }}>التاريخ</th>
               </tr>
             </thead>
             <tbody>

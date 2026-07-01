@@ -1,0 +1,186 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MOBILE PERFORMANCE — تحسين الأداء على الجوال
+   يُطبَّق فقط على الشاشات أقل من 768px
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ─── 1. GPU Layer hints لعناصر التحريك ─── */
+.sidebar,
+.main-content,
+.glass-panel,
+.kpi-card,
+.nav-item {
+  will-change: auto; /* نبدأ بـ auto ونفعّل فقط عند الحاجة */
+}
+
+/* ─── 2. تحسين التمرير اللمسي ─── */
+html {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto; /* بدون smooth scroll على الجوال */
+}
+
+body {
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+
+/* ─── 3. تقليل مدة الانتقالات على الجوال ─── */
+@media (max-width: 768px) {
+  :root {
+    --motion-fast: 80ms;
+    --motion-base: 150ms;
+    --motion-slow: 220ms;
+    --transition-smooth: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ─── تعطيل backdrop-filter المكلف على الجوال ─── */
+  /* هذا هو السبب الأول للتعلق على الجوال */
+  .sidebar,
+  [data-theme="dark"] .sidebar,
+  [data-theme="light"] .sidebar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--bg-2) !important;
+  }
+
+  [data-theme="dark"] .sidebar {
+    background: #0f0f10 !important;
+  }
+
+  .glass-panel,
+  [data-theme="dark"] .glass-panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .kpi-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .btn {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* تعطيل backdrop على كل العناصر */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* ─── تعطيل Nebula Orbs المتحركة على الجوال ─── */
+  /* filter: blur(100px) على عنصر بحجم 60vw = ثقيل جداً */
+  .app-container::before,
+  .app-container::after,
+  [data-theme="dark"] .app-container::before,
+  [data-theme="dark"] .app-container::after,
+  [data-theme="light"] .app-container::before,
+  [data-theme="light"] .app-container::after {
+    display: none !important;
+    animation: none !important;
+  }
+
+  /* تعطيل الـ ambient orb الثابت أيضاً */
+  [aria-hidden="true"][style*="blur"] {
+    display: none !important;
+  }
+
+  /* ─── تقليل box-shadow المعقدة ─── */
+  .glass-panel:hover,
+  [data-theme="dark"] .glass-panel:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  }
+
+  .nav-item.active {
+    box-shadow: none !important;
+  }
+
+  /* ─── تعطيل hover transforms على الجوال (لا يوجد hover حقيقي) ─── */
+  .nav-item:hover,
+  .switch-btn:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .sidebar-logo:hover {
+    transform: none !important;
+  }
+
+  /* ─── تحسين الـ transition على nav-item ─── */
+  .nav-item {
+    transition: background 120ms ease, color 120ms ease !important;
+  }
+
+  /* ─── تعطيل transition على body لتغيير الثيم ─── */
+  body {
+    transition: none !important;
+  }
+
+  /* ─── Contain layout لمنع reflow المتسلسل ─── */
+  .glass-panel {
+    contain: layout style;
+  }
+
+  .kpi-card {
+    contain: layout style;
+  }
+
+  /* ─── تحسين الأيقونات المتحركة (framer-motion loading) ─── */
+  /* تقليل الظل على الـ sidebar للجوال */
+  .sidebar {
+    box-shadow: -2px 0 8px rgba(0,0,0,0.2) !important;
+  }
+
+  [data-theme="dark"] .sidebar {
+    box-shadow: -2px 0 8px rgba(0,0,0,0.5) !important;
+  }
+}
+
+/* ─── 4. احترام تفضيل المستخدم لتقليل الحركة ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .app-container::before,
+  .app-container::after {
+    animation: none !important;
+  }
+}
+
+/* ─── 5. تحسين الـ Scrollable containers ─── */
+@media (max-width: 768px) {
+  .main-content {
+    /* تحسين التمرير داخل المحتوى */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: auto;
+    /* تقليل الـ padding على الجوال */
+    padding: var(--space-3) var(--space-3) var(--space-6) !important;
+    margin-right: 0 !important;
+  }
+
+  /* منع تراكم الـ shadow على الجداول */
+  .table-row:hover {
+    box-shadow: none !important;
+  }
+
+  /* تقليل البادينج في الـ glass panels على الجوال */
+  .glass-panel {
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+  }
+}
+
+/* ─── 6. Font rendering optimization ─── */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+/* ─── 7. Image optimization ─── */
+img {
+  content-visibility: auto;
+}
