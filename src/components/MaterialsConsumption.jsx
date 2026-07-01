@@ -792,7 +792,7 @@ export default function MaterialsConsumption({ user, t, lang }) {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem', width: '100%' }}>
+    <div className="grid-12" style={{ gap: '1.5rem', width: '100%' }}>
       <div className="screen-only-view" style={{ gridColumn: 'span 12', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         
         {/* Header controls (Bento Card) */}

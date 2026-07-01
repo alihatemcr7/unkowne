@@ -184,3 +184,81 @@ body {
 img {
   content-visibility: auto;
 }
+
+/* ─── 8. Responsive Grid & Layout Helper Classes ─── */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.landing-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.landing-features-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.bento-wide-card {
+  grid-column: span 2;
+}
+
+@media (max-width: 1024px) {
+  .grid-12 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid-12 > * {
+    grid-column: span 1 !important;
+  }
+  .grid-12 > [style*="grid-column: span 12"],
+  .grid-12 > [style*="gridColumn: 'span 12'"],
+  .grid-12 > [style*="gridColumn: span 12"] {
+    grid-column: span 2 !important;
+  }
+  .bento-wide-card {
+    grid-column: span 1 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-12 {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  .grid-12 > * {
+    grid-column: span 1 !important;
+  }
+  
+  /* Landing page mobile overrides */
+  .landing-hero {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+    text-align: center;
+    padding: 3rem 1.5rem !important;
+  }
+  .landing-hero > div {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .landing-hero .btn {
+    align-self: center;
+  }
+  
+  .landing-features-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Header button pill mobile overrides to hide text and show icons only */
+  .header-actions .btn-pill span {
+    display: none !important;
+  }
+  .header-actions .btn-pill {
+    padding: 8px !important;
+    min-width: 38px;
+    min-height: 38px;
+    justify-content: center;
+    border-radius: 50% !important;
+  }
+}
+

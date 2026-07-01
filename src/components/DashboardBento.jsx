@@ -141,9 +141,9 @@ export default function DashboardBento({ kpis, tasks, lang }) {
         {/* LEFT: Consumption Wide Stream (Simulated 8 cols via flex-basis/grid logic) */}
         <motion.section 
           variants={FADE_UP}
+          className="bento-wide-card"
           style={{
             flex: '2 1 0%',
-            gridColumn: 'span 2 / span 2',
             background: 'var(--surface)',
             borderRadius: '2.5rem',
             border: '1px solid var(--border)',

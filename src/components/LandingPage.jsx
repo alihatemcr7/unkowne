@@ -149,10 +149,10 @@ export default function LandingPage({ onNavigateToLogin, lang, setLang, theme, s
         initial={reduce ? false : 'hidden'}
         animate="visible"
         variants={stagger}
+        className="landing-hero"
         style={{
           flex: 1,
           display: 'grid',
-          gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)',
           gap: '4rem',
           alignItems: 'center',
           padding: 'clamp(3rem, 8vw, 6rem) 5%',
@@ -328,9 +328,9 @@ export default function LandingPage({ onNavigateToLogin, lang, setLang, theme, s
 
           {/* 2×2 grid — varied cell treatment */}
           <div
+            className="landing-features-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
               gap: '1.25rem',
             }}
           >

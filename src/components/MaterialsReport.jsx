@@ -201,7 +201,8 @@ export default function MaterialsReport({ marble, user, onUpdateMarbleStatus, t,
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem' }}
+      className="grid-12"
+      style={{ gap: '1.5rem' }}
     >
       
       {/* 1. Marble Summary Cards */}

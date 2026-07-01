@@ -198,19 +198,19 @@ html[dir="ltr"] textarea {
 [data-theme="dark"] .app-container::before {
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, #6d28d9 0%, #4f46e5 50%, transparent 70%);
+  background: radial-gradient(circle, #059669 0%, #047857 50%, transparent 70%);
   top: -20vw;
   left: -10vw;
-  opacity: 0.18;
+  opacity: 0.15;
 }
 
 [data-theme="dark"] .app-container::after {
   width: 45vw;
   height: 45vw;
-  background: radial-gradient(circle, #7c3aed 0%, #06b6d4 50%, transparent 70%);
+  background: radial-gradient(circle, #10b981 0%, #0d9488 50%, transparent 70%);
   bottom: -15vw;
   right: -10vw;
-  opacity: 0.12;
+  opacity: 0.10;
   animation-delay: -12s;
   animation-direction: alternate-reverse;
 }
@@ -218,19 +218,19 @@ html[dir="ltr"] textarea {
 [data-theme="light"] .app-container::before {
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, #c4b5fd 0%, #a5b4fc 60%, transparent 80%);
+  background: radial-gradient(circle, #a7f3d0 0%, #6ee7b7 60%, transparent 80%);
   top: -20vw;
   left: -15vw;
-  opacity: 0.5;
+  opacity: 0.35;
 }
 
 [data-theme="light"] .app-container::after {
   width: 45vw;
   height: 45vw;
-  background: radial-gradient(circle, #ddd6fe 0%, #e0e7ff 60%, transparent 80%);
+  background: radial-gradient(circle, #d1fae5 0%, #ccfbf1 60%, transparent 80%);
   bottom: -15vw;
   right: -10vw;
-  opacity: 0.6;
+  opacity: 0.45;
 }
 
 @keyframes nebulaFloat {

@@ -1,0 +1,24 @@
+{
+  "name": "متابعة موقع الجندي المجهول",
+  "short_name": "موقع الجندي",
+  "description": "منصة ويب تفاعلية ذكية لإدارة ومتابعة نسب الإنجاز لنصب الجندي المجهول.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#059669",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://mvco-iq.com/wp-content/uploads/2024/10/cropped-2color_logo.webp",
+      "type": "image/webp",
+      "sizes": "192x192",
+      "purpose": "any"
+    }
+  ]
+}

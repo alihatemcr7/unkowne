@@ -171,7 +171,7 @@ export default function UsersManagement({ currentUser, t, lang }) {
   const viewerCount = users.filter(u => u.role === 'viewer').length;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem', width: '100%' }}>
+    <div className="grid-12" style={{ gap: '1.5rem', width: '100%' }}>
       {/* Top Banner/Header */}
       <motion.div 
         className="glass-panel"
