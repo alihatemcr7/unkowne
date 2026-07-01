@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Building2, 
@@ -32,6 +32,22 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
   const [tempCompleted, setTempCompleted] = useState({});
   const [tempNotes, setTempNotes] = useState({});
   const [savingId, setSavingId] = useState(null);
+
+  // Responsive chart width detection
+  const chartContainerRef = useRef(null);
+  const [chartContainerWidth, setChartContainerWidth] = useState(600);
+  useEffect(() => {
+    const el = chartContainerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        setChartContainerWidth(entry.contentRect.width);
+      }
+    });
+    ro.observe(el);
+    setChartContainerWidth(el.offsetWidth);
+    return () => ro.disconnect();
+  }, []);
 
   // Group tasks by category
   const groupedTasks = categories.reduce((acc, cat) => {
@@ -366,152 +382,233 @@ export default function Dashboard({ kpis, tasks, categories, user, onUpdateProgr
       </div>
 
       {/* 2. Charts Visual Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
-      {/* Chart 1: Progress Comparison */}
-      <motion.div variants={itemVariants} style={{
-        background: 'var(--surface)',
-        borderRadius: '2.5rem',
-        border: '1px solid var(--border)',
-        boxShadow: '0 20px 40px -15px rgba(0,0,0,0.03)',
-        padding: '2rem',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
-          {t('chartProgressTitle')}
-        </h3>
-        <div style={{ flex: 1, minHeight: 0, width: '100%', minWidth: 0, overflow: 'hidden' }}>
-          <ResponsiveContainer width="100%" height={340} minWidth={0}>
-            <BarChart
-              layout="vertical"
-              data={chartData}
-              margin={{ top: 10, right: 15, left: 15, bottom: 10 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" horizontal={false} />
-              <XAxis 
-                type="number"
-                domain={[0, 100]}
-                stroke="var(--border)"
-                tick={{ fontSize: 9.5, fill: 'var(--muted)', fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)' }}
-                tickLine={false}
-              />
-              <YAxis 
-                type="category"
-                dataKey="name" 
-                stroke="var(--border)" 
-                tick={{ fontSize: 8.5, fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', fill: 'var(--fg-2)' }}
-                width={120}
-                tickLine={false}
-              />
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'var(--surface-solid)', 
-                  backdropFilter: 'blur(12px)',
-                  borderColor: 'var(--border)', 
-                  color: 'var(--fg)', 
-                  textAlign: lang === 'ar' ? 'right' : 'left', 
-                  fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', 
-                  borderRadius: 'var(--radius-sm)' 
-                }}
-              />
-              <Bar 
-                dataKey={lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'} 
-                radius={lang === 'ar' ? [4, 0, 0, 4] : [0, 4, 4, 0]}
-                barSize={8}
-              >
-                {chartData.map((entry, index) => {
-                  const is100 = entry[lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'] === 100;
-                  return (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={is100 ? 'var(--success, #10b981)' : 'var(--accent, #10b981)'} 
-                      opacity={is100 ? 1 : 0.7}
-                    />
-                  );
-                })}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </motion.div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
 
-      {/* Chart 2: Marble Status Distribution */}
+      {/* Chart 1: Progress Comparison — full-width, taller, labelled bars */}
       <motion.div variants={itemVariants} style={{
         background: 'var(--surface)',
-        borderRadius: '2.5rem',
+        borderRadius: '2rem',
         border: '1px solid var(--border)',
-        boxShadow: '0 20px 40px -15px rgba(0,0,0,0.03)',
+        boxShadow: 'var(--shadow-md)',
         padding: '2rem',
         display: 'flex',
         flexDirection: 'column',
-        height: '420px'
       }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--fg)' }}>
+          <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
+          {t('chartProgressTitle')}
+        </h3>
+        <div ref={chartContainerRef} style={{ width: '100%' }}>
+          {(() => {
+            const isMobile = chartContainerWidth < 480;
+            // On mobile: narrower YAxis so bars have room; hide right labels (tooltip covers it)
+            const yAxisWidth = isMobile
+              ? Math.min(120, Math.floor(chartContainerWidth * 0.38))
+              : lang === 'ar' ? 200 : 180;
+            const rightMargin = isMobile ? 8 : 56;
+            const barHeight = isMobile ? 20 : 18;
+            const yFontSize = isMobile ? 10 : 11.5;
+            const showLabel = !isMobile;
+            return (
+              <ResponsiveContainer width="100%" height={chartData.length * (isMobile ? 44 : 48) + 40}>
+                <BarChart
+                  layout="vertical"
+                  data={chartData}
+                  margin={{ top: 4, right: rightMargin, left: 0, bottom: 4 }}
+                  barCategoryGap="28%"
+                >
+                  <CartesianGrid strokeDasharray="4 4" stroke="var(--border-soft)" horizontal={false} vertical={true} />
+                  <XAxis
+                    type="number"
+                    domain={[0, 100]}
+                    stroke="var(--border)"
+                    tick={{ fontSize: isMobile ? 9 : 11, fill: 'var(--muted)', fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)' }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(v) => `${v}%`}
+                    ticks={isMobile ? [0, 25, 50, 75, 100] : [0, 25, 50, 75, 100]}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    stroke="transparent"
+                    tick={{ fontSize: yFontSize, fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', fill: 'var(--fg)', fontWeight: 500 }}
+                    width={yAxisWidth}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(v) => {
+                      if (isMobile && v.length > 10) return v.slice(0, 9) + '…';
+                      return v;
+                    }}
+                  />
+                  <Tooltip
+                    cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+                    contentStyle={{
+                      background: 'var(--surface-solid)',
+                      backdropFilter: 'blur(12px)',
+                      borderColor: 'var(--border)',
+                      color: 'var(--fg)',
+                      textAlign: lang === 'ar' ? 'right' : 'left',
+                      fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.85rem',
+                    }}
+                    itemStyle={{ color: 'var(--fg)' }}
+                    labelStyle={{ color: 'var(--fg)', fontWeight: 700 }}
+                    formatter={(value) => [`${value}%`, lang === 'ar' ? 'نسبة الإنجاز' : 'Progress']}
+                  />
+                  <Bar
+                    dataKey={lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'}
+                    radius={[0, 6, 6, 0]}
+                    barSize={barHeight}
+                    label={showLabel ? {
+                      position: 'right',
+                      formatter: (v) => `${v}%`,
+                      fill: 'var(--fg-2)',
+                      fontSize: 11,
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: 700,
+                    } : false}
+                  >
+                    {chartData.map((entry, index) => {
+                      const val = entry[lang === 'ar' ? 'نسبة الإنجاز %' : 'Progress %'];
+                      const pct = val / 100;
+                      return (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={val === 100
+                            ? '#10b981'
+                            : val >= 75
+                              ? `rgba(16,185,129,${0.55 + pct * 0.4})`
+                              : val >= 40
+                                ? `rgba(16,185,129,${0.35 + pct * 0.3})`
+                                : 'rgba(16,185,129,0.35)'}
+                        />
+                      );
+                    })}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            );
+          })()}
+        </div>
+      </motion.div>
+
+      {/* Chart 2: Marble Status Donut — larger ring, centered label, side-by-side legend */}
+      <motion.div variants={itemVariants} style={{
+        background: 'var(--surface)',
+        borderRadius: '2rem',
+        border: '1px solid var(--border)',
+        boxShadow: 'var(--shadow-md)',
+        padding: '2rem',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+        <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--fg)' }}>
           <Building2 size={18} style={{ color: 'var(--accent)' }} />
           {t('chartMarbleTitle')}
         </h3>
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', minHeight: 0 }}>
-          <div style={{ width: '160px', height: '160px', minWidth: 0, position: 'relative' }}>
-            <PieChart width={160} height={160}>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {/* Donut */}
+          <div style={{ position: 'relative', width: 'min(220px, 75vw)', height: 'min(220px, 75vw)', flexShrink: 0, margin: '0 auto' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
               <Pie
                 data={marbleChartData}
                 cx="50%"
                 cy="50%"
-                innerRadius={50}
-                outerRadius={70}
-                paddingAngle={4}
+                innerRadius={72}
+                outerRadius={108}
+                paddingAngle={3}
                 dataKey="value"
                 stroke="none"
+                startAngle={90}
+                endAngle={-270}
               >
                 {marbleChartData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={index === 0 ? 'var(--bg-2, #cbd5e1)' : 'var(--accent, #10b981)'} 
-                  />
+                  <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => `${value.toLocaleString()} ${t('pieces')}`}
-                contentStyle={{ 
-                  background: 'var(--surface-solid)', 
+                contentStyle={{
+                  background: 'var(--surface-solid)',
                   backdropFilter: 'blur(12px)',
-                  borderColor: 'var(--border)', 
-                  color: 'var(--fg)', 
-                  textAlign: lang === 'ar' ? 'right' : 'left', 
-                  fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)', 
-                  borderRadius: 'var(--radius-sm)' 
+                  borderColor: 'var(--border)',
+                  color: 'var(--fg)',
+                  fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '0.85rem',
                 }}
+                itemStyle={{ color: 'var(--fg)' }}
+                labelStyle={{ color: 'var(--fg)', fontWeight: 700 }}
               />
             </PieChart>
+            </ResponsiveContainer>
+            {/* Center Label */}
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pointerEvents: 'none',
+            }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--fg)', lineHeight: 1 }}>
+                {kpis.applied_marble_pieces?.toLocaleString() || '0'}
+              </span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--muted)', marginTop: '4px', fontFamily: lang === 'ar' ? 'var(--font-arabic)' : 'var(--font-english)' }}>
+                {t('pieces')}
+              </span>
+            </div>
           </div>
-          
-          {/* Custom Legend */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', width: '100%', padding: '0 0.5rem' }}>
-            {marbleChartData.map((entry, index) => (
-              <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ 
-                    width: '10px', 
-                    height: '10px', 
-                    borderRadius: '3px', 
-                    background: index === 0 
-                      ? 'var(--bg-2, #cbd5e1)' 
-                      : 'var(--accent, #10b981)', 
-                    border: '1px solid var(--border)' 
-                  }}></div>
-                  <span style={{ color: 'var(--muted)' }}>{entry.name}</span>
+
+          {/* Legend */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minWidth: 'min(220px, 100%)' }}>
+            {marbleChartData.map((entry, index) => {
+              const total = marbleChartData.reduce((s, e) => s + e.value, 0);
+              const pct = total > 0 ? ((entry.value / total) * 100).toFixed(1) : '0.0';
+              return (
+                <div key={index} style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      <div style={{
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '4px',
+                        background: entry.color,
+                        flexShrink: 0,
+                      }} />
+                      <span style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--fg)' }}>{entry.name}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.05rem', fontWeight: 800, color: 'var(--fg)' }}>{entry.value.toLocaleString()}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{pct}%</span>
+                    </div>
+                  </div>
+                  {/* Progress bar per color */}
+                  <div style={{ height: '6px', width: '100%', background: 'var(--bg-3, rgba(255,255,255,0.07))', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${pct}%`,
+                      background: entry.color,
+                      borderRadius: '999px',
+                      transition: 'width 0.6s ease',
+                    }} />
+                  </div>
                 </div>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '700' }}>{entry.value.toLocaleString()}</span>
-              </div>
-            ))}
-            <div style={{ borderTop: '1px solid var(--border)', marginTop: '0.25rem', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}>
-              <span>{t('chartTotalApplied')}</span>
-              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}>{kpis.applied_marble_pieces.toLocaleString()}</span>
+              );
+            })}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--fg)' }}>{t('chartTotalApplied')}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent)' }}>{kpis.applied_marble_pieces?.toLocaleString()}</span>
             </div>
           </div>
         </div>
       </motion.div>
+
       </div>
 
       {/* 3. General Project Progress Table */}

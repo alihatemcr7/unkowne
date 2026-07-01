@@ -109,6 +109,7 @@ const dictionary = {
     completedWithPercent: "مكتمل بنسبة {pct}%",
     notSpecifiedYet: "لم يحدد بعد",
     enterFieldStatus: "أدخل الموقف الميداني...",
+    pieces: "قطعة",
 
     // Login
     loginTitle: "لوحة متابعة نسب الإنجاز",
@@ -297,6 +298,7 @@ const dictionary = {
     completedWithPercent: "Completed by {pct}%",
     notSpecifiedYet: "Not specified yet",
     enterFieldStatus: "Enter field status...",
+    pieces: "pcs",
 
     // Login
     loginTitle: "Progress Monitoring Dashboard",
